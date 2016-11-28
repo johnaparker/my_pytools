@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -12,8 +12,8 @@ setup(
     description = ("My Python helper library"),
     license = "MIT",
     keywords = "Python",
-    url = "http://packages.python.org/an_example_pypi_project",
-    packages=['my_pytools'],
+    packages=find_packages(),
+    # packages=['my_pytools'],
     # modules=['my_matplotlib'],
     # subpackages=['my_matplotlib'],
     install_requires=['numpy', 'scipy', 'matplotlib'],

@@ -1,3 +1,7 @@
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+
 def mkcmap(): 
     white = '#ffffff'
     black = '#000000'
@@ -59,11 +63,3 @@ def modify_legend(**kwargs):
     plt.legend(**defaults)
 
 
-def tighten():
-    plt.gca().tick_params(axis='both', which='major', pad=2)
-    plt.gca().xaxis.labelpad = 1
-    plt.gca().yaxis.labelpad = 1
-    modify_legend(labelspacing=0.25)
-
-def remove_frame():
-    plt.gca().set_frame_on(False)

@@ -1,32 +1,64 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib
-import seaborn as sns
+import matplotlib as mpl
+from .plots import modify_legend
+
+# colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628" , "#f781bf"]
+# colors = ["windows blue", "amber", "greyish", "faded green", "dusty purple"]
+flatui_colors = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
+ggplot_colors = ['E24A33', '348ABD', '988ED5', '777777', 'FBC15E', '8EBA42', 'FFB5B8']
+main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628" , "#f781bf"]
+
+def set_colors(colors):
+    mpl.rcParams.update({'axes.prop_cycle': mpl.cycler('color', colors)})
+
+def default(fontsize=16):
+    mpl.rc('font', size=fontsize, family="Arial")
+    mpl.rc('lines', linewidth=2, solid_capstyle="round")
+    mpl.rc('axes', axisbelow=True, titlesize=fontsize, labelsize=fontsize)
+    mpl.rc('legend', frameon=False, fontsize=fontsize)
+    mpl.rc('xtick', direction="out", labelsize=fontsize)
+    mpl.rc('ytick', direction="out", labelsize=fontsize)
+    mpl.rc('figure', facecolor='white')
+    mpl.rc('grid', linestyle='-', color='0.8')
+    set_colors(main_colors)
+    # mpl.rcParams.update({"text.usetex": True})
+
+def paper(fontsize=10):
+    default(fontsize)
+
+def presentation(fontsize=22):
+    default(fontsize)
+
+def remove_ticks():
+    """remove x,y ticks, major and minor"""
+    plt.gca().xaxis.set_ticks_position('none') 
+    plt.gca().yaxis.set_ticks_position('none') 
+
+def despine():
+    """remove top-x and y-right axes"""
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['top'].set_visible(False)
+    # Only show ticks on the left and bottom spines
+    plt.gca().yaxis.set_ticks_position('left')
+    plt.gca().xaxis.set_ticks_position('bottom')
+
+def tighten():
+    """tighen x,y labels and ticks"""
+    plt.gca().tick_params(axis='both', which='major', pad=2)
+    plt.gca().xaxis.labelpad = 1
+    plt.gca().yaxis.labelpad = 1
+    modify_legend(labelspacing=0.25)
+
+def remove_frame():
+    """remove all borders"""
+    plt.gca().set_frame_on(False)
 
 
-# plt.style.use('ggplot')
-# sns.set(font_scale=8.8/11)
-sns.set_style("white")
-sns.set_context("paper", rc={"lines.linewidth": 1.5})
-sns.set_style({'font.family': "Times New Roman", 'text.color': "black", 'axes.labelcolor': '0.0',
-    'xtick.color': '0.0', 'ytick.color': '0.0'})
-sns.set_palette("Paired")
-
-flatui = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
-sns.set_palette(sns.color_palette(flatui))
-
-colors = ["windows blue", "amber", "greyish", "faded green", "dusty purple"]
-sns.set_palette(sns.xkcd_palette(colors))
-
-
-colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628" , "#f781bf"]
-sns.set_palette(sns.color_palette(colors))
-
-unit_x = 0.8
-unit_y = 0.8
-
-# sns.set_context("talk", font_scale=2, rc={"lines.linewidth": 4})
-# sns.set_style({'font.family': "Times New Roman"})
-# unit_x = 5
-# unit_y = 5
+# def presentation_sea(fontsize=16):
+    # import seaborn as sns
+    # sns.set_palette(sns.color_palette(colors))
+    # sns.set_style("white")
+    # sns.set_context("notebook", font_scale=fontsize/11.0, rc={"lines.linewidth": 2.0})
+    # sns.set_style({'font.family': "Arial", 'text.color': "black", 'axes.labelcolor': '0.0',
+        # 'xtick.color': '0.0', 'ytick.color': '0.0'})
