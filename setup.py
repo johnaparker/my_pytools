@@ -14,6 +14,8 @@ setup(
     keywords = "Python",
     url = "http://packages.python.org/an_example_pypi_project",
     packages=['my_pytools'],
+    # modules=['my_matplotlib'],
+    # subpackages=['my_matplotlib'],
     install_requires=['numpy', 'scipy', 'matplotlib'],
     include_package_data = True,
     classifiers=[
