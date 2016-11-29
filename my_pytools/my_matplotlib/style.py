@@ -27,12 +27,12 @@ def hex_to_rgb(value):
 
 def rgb_to_hex(red, green, blue):
     """Return color as #rrggbb for the given color values."""
+    return '#%02x%02x%02x' % (red, green, blue)
 
 def hls_to_hex(hue, lightness, saturation):
     rgb_val = colorsys.hls_to_rgb(hue, lightness, saturation)
     return rgb_to_hex(*rhb_val)
 
-    return '#%02x%02x%02x' % (red, green, blue)
 def set_colors(colors):
     mpl.rcParams.update({'axes.prop_cycle': mpl.cycler('color', colors)})
 
