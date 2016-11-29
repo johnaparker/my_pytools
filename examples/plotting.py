@@ -4,7 +4,7 @@ import my_pytools.my_matplotlib.style as style
 import my_pytools.my_matplotlib.plots as plots
 import matplotlib
 
-figsize = style.paper()
+figsize = style.screen()
 plt.figure(1, figsize=figsize.get())
 
 x = np.linspace(-1,1,100)

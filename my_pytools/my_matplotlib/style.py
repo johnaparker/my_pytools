@@ -22,7 +22,7 @@ def set_colors(colors):
     mpl.rcParams.update({'axes.prop_cycle': mpl.cycler('color', colors)})
 
 def default(fontsize=16):
-    mpl.rc('font', size=fontsize, family="Verdana")
+    mpl.rc('font', size=fontsize, family="Arial")
     mpl.rc('lines', linewidth=2, solid_capstyle="round")
     mpl.rc('axes', axisbelow=True, titlesize=fontsize, labelsize=fontsize)
     mpl.rc('legend', frameon=False, fontsize=fontsize)
@@ -36,6 +36,7 @@ def default(fontsize=16):
 def paper(fontsize=8):
     default(fontsize)
     mpl.rc('lines', linewidth=1.5)
+    mpl.rcParams.update({'xtick.major.size': 2.5, 'ytick.major.size': 2.5})
     return figsize(2)
 
 def screen(fontsize=22):
