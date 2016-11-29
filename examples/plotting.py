@@ -4,10 +4,10 @@ import my_pytools.my_matplotlib.style as style
 import my_pytools.my_matplotlib.plots as plots
 import matplotlib
 
-plt.figure(1, figsize=(3,2))
-style.paper()
+figsize = style.paper()
+plt.figure(1, figsize=figsize.get())
 
-x = np.linspace(0,1,100)
+x = np.linspace(-1,1,100)
 y1 = x**1
 y2 = x**2
 y3 = x**3
