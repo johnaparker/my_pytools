@@ -33,7 +33,7 @@ def default(fontsize=16):
     set_colors(main_colors)
     # mpl.rcParams.update({"text.usetex": True})
 
-def paper(fontsize=8):
+def paper(fontsize=7):
     default(fontsize)
     mpl.rc('lines', linewidth=1.5)
     mpl.rcParams.update({'xtick.major.size': 2.5, 'ytick.major.size': 2.5})
