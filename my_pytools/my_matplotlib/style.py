@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from .plots import modify_legend
 import colorsys
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 flatui_colors = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
 ggplot_colors = ['E24A33', '348ABD', '988ED5', '777777', 'FBC15E', '8EBA42', 'FFB5B8']
@@ -33,6 +34,14 @@ def hls_to_hex(hue, lightness, saturation):
     rgb_val = colorsys.hls_to_rgb(hue, lightness, saturation)
     return rgb_to_hex(*rhb_val)
 
+def hex_to_hls(hex_val):
+    rgb_val = np.array(hex_to_rgb(hex_val))*255
+    return colorsys.rgb_to_hls(*rgb_val)
+
+def red(lightness=0.5):
+    print(hex_to_hls(main_colors[0]))
+
+
 def set_colors(colors):
     mpl.rcParams.update({'axes.prop_cycle': mpl.cycler('color', colors)})
 
@@ -44,19 +53,22 @@ def default(fontsize=16):
     # mpl.rc('xtick', direction="out", labelsize=fontsize)
     # mpl.rc('ytick', direction="out", labelsize=fontsize)
     mpl.rc('figure', facecolor='white')
-    mpl.rc('grid', linestyle='-', color='0.8')
+    mpl.rc('grid', linestyle='-', color='0.5')
     set_colors(main_colors)
     # mpl.rcParams.update({"text.usetex": True})
 
 def paper(fontsize=7):
     default(fontsize)
     mpl.rc('lines', linewidth=1.5)
-    mpl.rcParams.update({'xtick.major.size': 2.5, 'ytick.major.size': 2.5})
+    mpl.rc('axes', linewidth=0.5)
+    mpl.rcParams.update({'xtick.major.size': 2.0, 'ytick.major.size': 2.0})
     return figsize(2)
 
 def screen(fontsize=22):
     default(fontsize)
     mpl.rc('lines', linewidth=3)
+    mpl.rc('axes', linewidth=1.5)
+    mpl.rcParams.update({'xtick.major.size': 7.0, 'ytick.major.size': 7.0})
     return figsize(8)
 
 def remove_ticks():
@@ -83,6 +95,19 @@ def remove_frame():
     """remove all borders"""
     plt.gca().set_frame_on(False)
 
+def axis_equal():
+    """set the x,y axes length equal"""
+    plt.gca().set_aspect('equal', adjustable='box')
+
+def colorbar(im):
+    """add a properly scaled colorbar"""
+    ax = plt.gca()
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im,cax=cax )
+    cb.ax.yaxis.set_tick_params(pad=1)
+
+    return cb
 
 # plt.rcParams['text.usetex'] = True #Let TeX do the typsetting
 # plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}',r'\sansmath']
