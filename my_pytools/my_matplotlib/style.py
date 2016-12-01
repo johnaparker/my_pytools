@@ -109,6 +109,10 @@ def colorbar(im):
 
     return cb
 
+def scientific_axis():
+    """make y axis scientific"""
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+
 # plt.rcParams['text.usetex'] = True #Let TeX do the typsetting
 # plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}',r'\sansmath']
 #Force sans-serif math mode

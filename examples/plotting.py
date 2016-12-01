@@ -75,10 +75,12 @@ brown = lambda lightness=None: color_i(5,lightness)
 pink = lambda lightness=None: color_i(6,lightness)
 
 plt.figure(2)
-lightness = np.linspace(0.3, 0.70, 3)
+N = 3
+lightness = np.linspace(0.3, 0.70, N)
 markers = ['o', 's', 'v']
 main = [103/360, 207/360, 311/360]
-for j in range(3):
+# main = np.linspace(0,360,N+1)[:-1]/360
+for j in range(N):
     for i in range(3):
         color = hls_to_hex(main[j], lightness[i], .55)
         plt.plot(x,(i+1)*x + 4*j*x**2, marker=markers[i], color = color, markevery=10, markersize=9)
