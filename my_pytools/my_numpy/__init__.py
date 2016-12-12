@@ -1,2 +1,2 @@
 from . import interpolate 
-from . import intergrate 
+from . import integrate 
