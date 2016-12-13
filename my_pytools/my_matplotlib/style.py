@@ -7,9 +7,10 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 flatui_colors = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
 ggplot_colors = ['E24A33', '348ABD', '988ED5', '777777', 'FBC15E', '8EBA42', 'FFB5B8']
-main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf"]
 pair_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf"]
 # main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#9900cc", "#f781bf", "#00cccc", "#802b00"]
+main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf", "#00cca3"]
+#          red        blue        green       purple   orange     brown        pink      cyan       
 
 class figsize:
     def __init__(self, width, ratio = 0.8):

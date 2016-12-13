@@ -20,7 +20,7 @@ main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" 
 # style.set_colors(colors)
 
 
-for i in range(7):
+for i in range(8):
     plt.plot(x,x+i, label= "plot {}".format(i), linewidth=4)
 
 plt.legend(loc='best')
