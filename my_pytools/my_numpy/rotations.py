@@ -1,5 +1,4 @@
 import numpy as np
-from .integrate import simps_2d
 from .interpolate import ndinterp
 
 def axis_angle(u, theta):

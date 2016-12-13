@@ -11,16 +11,20 @@ def mkcmap():
         'anglemap', [black, red, white, blue, black], N=256, gamma=1)
     return anglemap
 
-def mk_format_coord(data,xdata,ydata):
+def pcolor_z_info(data,xdata,ydata, ax=None):
+    if not ax:
+        ax = plt.gca()
     numrows, numcols = data.shape
     def format_coord(x, y):
         col = np.argmin(np.abs(x-xdata))
         row = np.argmin(np.abs(y-ydata))
         if col>=0 and col<numcols and row>=0 and row<numrows:
             z = data[row,col]
-            return 'x=%1.4f, y=%1.4f, z=%1.4f'%(x, y, z)
+            return 'x=%1.4g, y=%1.4g, z=%1.4g'%(x, y, z)
         else:
-            return 'x=%1.4f, y=%1.4f'%(x, y)
+            return 'x=%1.4g, y=%1.4g'%(x, y)
+
+    ax.format_coord = format_coord
     return format_coord
 
 def modify_legend(**kwargs):
