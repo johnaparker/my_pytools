@@ -76,34 +76,35 @@ x = np.linspace(-1,1,100)
 for i in range(8):
     plt.plot(x,x+7-i, label= "plot {}".format(i), linewidth=4)
 
-plt.legend(loc=4, frameon=True)
-plt.xlabel("My x label")
-plt.ylabel("My y label")
-# plt.title("My title")
-
-# plots.remove_frame()
-# style.despine()
-# plt.grid()
-# style.tighten()
-# plt.tight_layout()
-# plt.savefig("temp.pdf", transparent=True)
+plt.legend(loc=2, frameon=True)
+plt.xlabel("x label")
+plt.ylabel("y label")
 
 
+plt.figure(2, figsize=figsize.get())
+import numpy.random as random
+for i in range(8):
+    scale = random.uniform(0.6,2.4)
+    x = random.normal(size=100, loc=4*i, scale=scale)
+    plt.hist(x, alpha=0.7, bins=10, label = "dist. {}".format(i))
+plt.gca().legend(frameon=True, bbox_to_anchor=(1.2,1.05), shadow=True)
+# plt.xlim(xmin=-20)
 
-plt.figure(2)
-N = 3
-lightness = np.linspace(0.3, 0.70, N)
-markers = ['o', 's', 'v']
-main = [103/360, 207/360, 311/360]
-# main = np.linspace(0,360,N+1)[:-1]/360
-for j in range(N):
-    for i in range(3):
-        color = hls_to_hex(main[j], lightness[i], .55)
-        plt.plot(x,(i+1)*x + 4*j*x**2, marker=markers[i], color = color, markevery=10, markersize=9)
-plt.grid()
+plt.xlabel("x label")
+plt.ylabel("y label")
 
 plt.figure(3)
-for i in np.linspace(0,3,15):
-    plt.plot(x,(x+1)*i, color=red(.3 + i/3*.5), linewidth=4)
+plt.axis('off')
+for i in range(8):
+    rc = plt.Rectangle((i*15,0), 10, 10, fc=style.main_colors[i])
+    plt.gca().add_patch(rc)
+    rgb = hex_to_rgb(style.main_colors[i])
+    plt.text(i*15, -4, "r: {0}".format(rgb[0]), fontsize=12)
+    plt.text(i*15, -7, "g: {0}".format(rgb[1]), fontsize=12)
+    plt.text(i*15, -10, "b: {0}".format(rgb[2]), fontsize=12)
+    plt.text(i*15, 11, "color {0}".format(i), fontsize=12)
+plt.xlim([-5, 120])
 
+plt.axis('equal')
 plt.show()
+

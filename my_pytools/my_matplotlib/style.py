@@ -12,6 +12,8 @@ pair_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" 
 main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf", "#00cca3"]
 #          red        blue        green       purple   orange     brown        pink      cyan       
 
+main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf", "#666666"]
+#          red        blue        green       purple   orange     brown        pink      gray       
 class figsize:
     def __init__(self, width, ratio = 0.8):
         self.width = width
