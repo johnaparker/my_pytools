@@ -2,17 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from .plots import modify_legend
+from .colors import color_palettes
 import colorsys
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-
-palette1 = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf", "#666666"]
-
-palette2 = ["#066fba", "#d74c11","#ecaf1c", "#7b2b8b", "#72a92a", "#d40000", "#0000ff", "#6c5353"]
-
-palette3 = ["#ff0000", "#0000ff", "#89a02c", "#800080", "#ff7f2a", "#a05a2c", "#ff55dd", "#000000"]
-
-main_colors = palette1
 
 class figsize:
     def __init__(self, width, ratio = 0.8):
@@ -25,51 +18,6 @@ class figsize:
         """return figsize as (width,height)"""
         return np.array((self.width, self.height))
 
-def hex_to_rgb(value):
-    """Return (red, green, blue) for the color given as #rrggbb."""
-    value = value.lstrip('#')
-    lv = len(value)
-    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
-
-def rgb_to_hex(red, green, blue):
-    """Return color as #rrggbb for the given color values."""
-    red = int(round(red))
-    green = int(round(green))
-    blue = int(round(blue))
-    return '#%02x%02x%02x' % (red, green, blue)
-
-def hls_to_hex(hue, lightness, saturation):
-    rgb_val = np.array(colorsys.hls_to_rgb(hue, lightness, saturation))*255
-    return rgb_to_hex(*rgb_val)
-
-def hex_to_hls(hex_val):
-    rgb_val = np.array(hex_to_rgb(hex_val))/255.0
-    return np.array(colorsys.rgb_to_hls(*rgb_val))
-
-def colors(i, lightness=None):
-    """get color index i with desired lightness"""
-    hls_val = hex_to_hls(main_colors[i])
-    if lightness != None:
-        hls_val[1] = lightness 
-    new_hex = hls_to_hex(*hls_val)
-    return new_hex
-
-#          red        blue        green       purple   orange     brown        pink      gray       
-
-red = lambda lightness=None: colors(0,lightness)
-blue = lambda lightness=None: colors(1,lightness)
-green = lambda lightness=None: colors(2,lightness)
-purple = lambda lightness=None: colors(3,lightness)
-orange = lambda lightness=None: colors(4,lightness)
-brown = lambda lightness=None: colors(5,lightness)
-pink = lambda lightness=None: colors(6,lightness)
-gray = lambda lightness=None: colors(7,lightness)
-
-def set_colors(colors):
-    """set default color cycle to colors (list)"""
-    main_colors = colors
-    mpl.rcParams.update({'axes.prop_cycle': mpl.cycler('color', colors)})
-
 def default(fontsize=16):
     """default settings"""
     mpl.rc('font', size=fontsize, family="Arial")
@@ -80,7 +28,6 @@ def default(fontsize=16):
     # mpl.rc('ytick', direction="out", labelsize=fontsize)
     mpl.rc('figure', facecolor='white')
     mpl.rc('grid', linestyle='-', color='0.5')
-    set_colors(palette1)
     # mpl.rcParams.update({"text.usetex": True})
 
 def paper(fontsize=7):
