@@ -4,10 +4,10 @@ import my_pytools.my_matplotlib.style as style
 import my_pytools.my_matplotlib.plots as plots
 import matplotlib
 
-figsize = style.screen()
+style.screen()
 style.latex()
 
-plt.figure(1, figsize=figsize.get())
+plt.figure(1)
 
 x = np.linspace(-1,1,100)
 for i in range(8):
@@ -70,7 +70,7 @@ plt.text(0.0,2.0, r"$\mathrm{\bra{\psi}\ket{\psi}}$ $\expval{A}{\Psi}$")
 plt.text(-0.6,-2.5, r"$\Omega = 2.0$")
 # plt.title(r"$\Sigma$, $\mathrm{\Sigma}$, $\mathregular{\Sigma}$")
 
-plt.legend(loc='best')
+plt.legend(loc=2)
 plt.savefig("test.pdf", bbox_inches='tight')
 # plt.savefig("test.pdf")
 

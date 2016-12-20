@@ -89,15 +89,23 @@ def paper(fontsize=7):
     mpl.rc('lines', linewidth=1.5)
     mpl.rc('axes', linewidth=0.5)
     mpl.rcParams.update({'xtick.major.size': 2.0, 'ytick.major.size': 2.0})
-    return figsize(2)
 
-def screen(fontsize=22):
+    size = figsize(2)
+    mpl.rc('figure', figsize=size.get())
+
+    return size
+
+def screen(fontsize=25):
     """screen settings"""
     default(fontsize)
     mpl.rc('lines', linewidth=3)
     mpl.rc('axes', linewidth=1.5)
     mpl.rcParams.update({'xtick.major.size': 7.0, 'ytick.major.size': 7.0})
-    return figsize(8)
+    
+    size = figsize(12)
+    mpl.rc('figure', figsize=size.get())
+
+    return size
 
 def latex():
     """enable latex for all string expressions.
