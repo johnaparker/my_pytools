@@ -5,22 +5,24 @@ from .plots import modify_legend
 import colorsys
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-flatui_colors = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
-ggplot_colors = ['E24A33', '348ABD', '988ED5', '777777', 'FBC15E', '8EBA42', 'FFB5B8']
-pair_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf"]
-# main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#9900cc", "#f781bf", "#00cccc", "#802b00"]
-main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf", "#00cca3"]
-#          red        blue        green       purple   orange     brown        pink      cyan       
 
-main_colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf", "#666666"]
-#          red        blue        green       purple   orange     brown        pink      gray       
+palette1 = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#a65628" , "#f781bf", "#666666"]
+
+palette2 = ["#066fba", "#d74c11","#ecaf1c", "#7b2b8b", "#72a92a", "#d40000", "#0000ff", "#6c5353"]
+
+palette3 = ["#ff0000", "#0000ff", "#89a02c", "#800080", "#ff7f2a", "#a05a2c", "#ff55dd", "#000000"]
+
+main_colors = palette1
+
 class figsize:
     def __init__(self, width, ratio = 0.8):
+        """figure width and aspect ratio"""
         self.width = width
         self.ratio = ratio
         self.height = ratio*width
 
     def get(self):
+        """return figsize as (width,height)"""
         return np.array((self.width, self.height))
 
 def hex_to_rgb(value):
@@ -31,24 +33,45 @@ def hex_to_rgb(value):
 
 def rgb_to_hex(red, green, blue):
     """Return color as #rrggbb for the given color values."""
+    red = int(round(red))
+    green = int(round(green))
+    blue = int(round(blue))
     return '#%02x%02x%02x' % (red, green, blue)
 
 def hls_to_hex(hue, lightness, saturation):
-    rgb_val = colorsys.hls_to_rgb(hue, lightness, saturation)
-    return rgb_to_hex(*rhb_val)
+    rgb_val = np.array(colorsys.hls_to_rgb(hue, lightness, saturation))*255
+    return rgb_to_hex(*rgb_val)
 
 def hex_to_hls(hex_val):
-    rgb_val = np.array(hex_to_rgb(hex_val))*255
-    return colorsys.rgb_to_hls(*rgb_val)
+    rgb_val = np.array(hex_to_rgb(hex_val))/255.0
+    return np.array(colorsys.rgb_to_hls(*rgb_val))
 
-def red(lightness=0.5):
-    print(hex_to_hls(main_colors[0]))
+def colors(i, lightness=None):
+    """get color index i with desired lightness"""
+    hls_val = hex_to_hls(main_colors[i])
+    if lightness != None:
+        hls_val[1] = lightness 
+    new_hex = hls_to_hex(*hls_val)
+    return new_hex
 
+#          red        blue        green       purple   orange     brown        pink      gray       
+
+red = lambda lightness=None: colors(0,lightness)
+blue = lambda lightness=None: colors(1,lightness)
+green = lambda lightness=None: colors(2,lightness)
+purple = lambda lightness=None: colors(3,lightness)
+orange = lambda lightness=None: colors(4,lightness)
+brown = lambda lightness=None: colors(5,lightness)
+pink = lambda lightness=None: colors(6,lightness)
+gray = lambda lightness=None: colors(7,lightness)
 
 def set_colors(colors):
+    """set default color cycle to colors (list)"""
+    main_colors = colors
     mpl.rcParams.update({'axes.prop_cycle': mpl.cycler('color', colors)})
 
 def default(fontsize=16):
+    """default settings"""
     mpl.rc('font', size=fontsize, family="Arial")
     mpl.rc('lines', linewidth=2, solid_capstyle="round")
     mpl.rc('axes', axisbelow=True, titlesize=fontsize, labelsize=fontsize)
@@ -57,10 +80,11 @@ def default(fontsize=16):
     # mpl.rc('ytick', direction="out", labelsize=fontsize)
     mpl.rc('figure', facecolor='white')
     mpl.rc('grid', linestyle='-', color='0.5')
-    set_colors(main_colors)
+    set_colors(palette1)
     # mpl.rcParams.update({"text.usetex": True})
 
 def paper(fontsize=7):
+    """paper settings"""
     default(fontsize)
     mpl.rc('lines', linewidth=1.5)
     mpl.rc('axes', linewidth=0.5)
@@ -68,11 +92,26 @@ def paper(fontsize=7):
     return figsize(2)
 
 def screen(fontsize=22):
+    """screen settings"""
     default(fontsize)
     mpl.rc('lines', linewidth=3)
     mpl.rc('axes', linewidth=1.5)
     mpl.rcParams.update({'xtick.major.size': 7.0, 'ytick.major.size': 7.0})
     return figsize(8)
+
+def latex():
+    """enable latex for all string expressions.
+       By default, uses Helvetica font            """
+
+    mpl.rcParams['text.usetex'] = True #Let TeX do the typsetting
+
+    mpl.rcParams['font.family'] = 'sans-serif' # ... for regular text
+    mpl.rcParams['font.sans-serif'] = 'Helvetica' # Choose a nice font here
+
+    mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}', r'\usepackage{physics}',  r'\usepackage[detect-all]{siunitx}', r'\sisetup{detect-all}',  r'\usepackage{upgreek}',
+r'\renewcommand\familydefault\sfdefault',
+r'\usepackage[symbolgreek,upright]{mathastext}',
+r'\renewcommand\familydefault\rmdefault']
 
 def remove_ticks():
     """remove x,y ticks, major and minor"""
@@ -116,11 +155,6 @@ def scientific_axis():
     """make y axis scientific"""
     plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 
-# plt.rcParams['text.usetex'] = True #Let TeX do the typsetting
-# plt.rcParams['text.latex.preamble'] = [r'\usepackage{sansmath}',r'\sansmath']
-#Force sans-serif math mode
-# plt.rcParams['font.family'] = 'sans-serif' # ... for regular text
-# plt.rcParams['font.sans-serif'] = 'Helvetica' # Choose a nice font here
 
 # def presentation_sea(fontsize=16):
     # import seaborn as sns

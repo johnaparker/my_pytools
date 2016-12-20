@@ -89,7 +89,8 @@ palettes = [style.main_colors,
                rgb_to_hex(240,228,66),
                rgb_to_hex(0,114,178),
                rgb_to_hex(213,94,0),
-               rgb_to_hex(204,121,167)]
+               rgb_to_hex(204,121,167)],
+            ["#ff0000", "#0000ff", "#89a02c", "#800080", "#ff7f2a", "#a05a2c", "#ff55dd", "#000000"],
             ]
 
 
