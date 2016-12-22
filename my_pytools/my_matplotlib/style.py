@@ -24,20 +24,23 @@ def default(fontsize=16):
     mpl.rc('lines', linewidth=2, solid_capstyle="round")
     mpl.rc('axes', axisbelow=True, titlesize=fontsize, labelsize=fontsize)
     mpl.rc('legend', frameon=False, fontsize=fontsize)
-    # mpl.rc('xtick', direction="out", labelsize=fontsize)
-    # mpl.rc('ytick', direction="out", labelsize=fontsize)
+    mpl.rc('xtick', direction="out", labelsize=fontsize)
+    mpl.rc('ytick', direction="out", labelsize=fontsize)
     mpl.rc('figure', facecolor='white')
     mpl.rc('grid', linestyle='-', color='0.5')
-    # mpl.rcParams.update({"text.usetex": True})
 
-def paper(fontsize=7):
+
+def paper(cols=1, fontsize=7):
     """paper settings"""
     default(fontsize)
-    mpl.rc('lines', linewidth=1.5)
+    mpl.rc('lines', linewidth=1.0)
     mpl.rc('axes', linewidth=0.5)
     mpl.rcParams.update({'xtick.major.size': 2.0, 'ytick.major.size': 2.0})
+    mpl.rcParams.update({'xtick.major.width': 0.5, 'ytick.major.width': 0.5})
 
-    size = figsize(2)
+    widths = {3: 2, 2: 3, 1: 4}
+
+    size = figsize(widths[cols])
     mpl.rc('figure', figsize=size.get())
 
     return size
@@ -48,6 +51,7 @@ def screen(fontsize=25):
     mpl.rc('lines', linewidth=3)
     mpl.rc('axes', linewidth=1.5)
     mpl.rcParams.update({'xtick.major.size': 7.0, 'ytick.major.size': 7.0})
+    mpl.rcParams.update({'xtick.major.width': 1.5, 'ytick.major.width': 1.5})
     
     size = figsize(12)
     mpl.rc('figure', figsize=size.get())
@@ -77,7 +81,10 @@ def despine():
     """remove top-x and y-right axes"""
     plt.gca().spines['right'].set_visible(False)
     plt.gca().spines['top'].set_visible(False)
-    # Only show ticks on the left and bottom spines
+    half_ticks()
+
+def half_ticks():
+    """Only show ticks on the left and bottom spines"""
     plt.gca().yaxis.set_ticks_position('left')
     plt.gca().xaxis.set_ticks_position('bottom')
 
@@ -109,6 +116,10 @@ def colorbar(im):
 def scientific_axis():
     """make y axis scientific"""
     plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+
+def fill_error_bar(x, lower, upper, color, alpha=0.35, linewidth=mpl.rcParams['lines.linewidth']/2.0):
+    """error bar using fill in between lower and upper"""
+    plt.fill_between(x, lower, upper, color=color, alpha=alpha,linewidth=linewidth)
 
 
 # def presentation_sea(fontsize=16):

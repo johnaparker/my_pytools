@@ -35,10 +35,10 @@ def colors(i, lightness=None):
 
 #          red        blue        green       purple   orange     brown        pink      gray       
 
-red = lambda lightness=None: colors(0,lightness)
-blue = lambda lightness=None: colors(1,lightness)
+blue = lambda lightness=None: colors(0,lightness)
+orange = lambda lightness=None: colors(1,lightness)
 green = lambda lightness=None: colors(2,lightness)
-orange = lambda lightness=None: colors(3,lightness)
+red = lambda lightness=None: colors(3,lightness)
 purple = lambda lightness=None: colors(4,lightness)
 brown = lambda lightness=None: colors(5,lightness)
 pink = lambda lightness=None: colors(6,lightness)
@@ -56,15 +56,15 @@ def set_colors(palette):
 
 
 color_palettes = {
-    "main" : ["#ff0000", "#0066ff", "#89a02c",rgb_to_hex(255,127,14), "#7b2b8b", "#a05a2c", "#ff55dd", "#4d4d4d"],
+    "main" : ["#0066ff", rgb_to_hex(255,127,14), "#89a02c", "#ff0000", "#7b2b8b", "#a05a2c", "#ff55dd", "#4d4d4d"],
 
-    "main soft" : ["#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3", "#a65628" , "#f781bf", "#666666"],
+    "main soft" : ["#377eb8", "#ff7f00", "#4daf4a", "#e41a1c", "#984ea3", "#a65628" , "#f781bf", "#666666"],
+
+    "norbert" : ["#0000ff", "#ff7f2a", "#89a02c", "#ff0000", "#800080", "#a05a2c", "#ff55dd", "#222222"],
+
+    "mpl2": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"],
 
     "palette1" : ["#066fba", "#d74c11","#ecaf1c", "#7b2b8b", "#72a92a", "#d40000", "#0000ff", "#6c5353"],
-
-    "norbert" : ["#ff0000", "#0000ff", "#89a02c", "#ff7f2a", "#800080", "#a05a2c", "#ff55dd", "#222222"],
-
-    "palette2" : [rgb_to_hex(31,119,180), rgb_to_hex(255,127,14), rgb_to_hex(44,160,44), rgb_to_hex(214,39,40), rgb_to_hex(148,103,189), rgb_to_hex(140,86,75), rgb_to_hex(227,119,194), rgb_to_hex(127,127,127), rgb_to_hex(188,189,34), rgb_to_hex(23,190,207)],
 
     "color blind" : [rgb_to_hex(0,0,0),
                rgb_to_hex(230,159,0),
@@ -74,8 +74,6 @@ color_palettes = {
                rgb_to_hex(0,114,178),
                rgb_to_hex(213,94,0),
                rgb_to_hex(204,121,167)],
-
-
     }
 
 default_palette = color_palettes['main']
