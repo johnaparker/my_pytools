@@ -5,7 +5,7 @@ import my_pytools.my_matplotlib.colors as colors
 import my_pytools.my_matplotlib.plots as plots
 import matplotlib
 
-style.paper()
+style.screen()
 style.latex()
 colors.set_colors("mpl2")
 

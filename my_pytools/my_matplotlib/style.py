@@ -28,6 +28,7 @@ def default(fontsize=16):
     mpl.rc('ytick', direction="out", labelsize=fontsize)
     mpl.rc('figure', facecolor='white')
     mpl.rc('grid', linestyle='-', color='0.5')
+    mpl.rc('mathtext', default='rm',fontset='stixsans')
 
 
 def paper(cols=1, fontsize=7):

@@ -5,11 +5,10 @@ import my_pytools.my_matplotlib.colors as colors
 import matplotlib as mpl
 
 style.screen()
-# colors.set_colors('main')
-mpl.rc('mathtext', default='rm',fontset='stixsans')
+colors.set_colors('mpl2')
 # style.latex()
 
-size = 200
+size = 1000
 var = .8
 
 x = np.random.normal(3,var, size=size)
@@ -53,6 +52,8 @@ plt.text(1,0.4, r'$test$, $\sum_{n=0}^{n=10}{a_n \pi \lambda^2}$')
 plt.text(8,0.4, r'$test$, $\mathregular{\sum_{n=0}^{n=10}{a_n \pi \lambda^2}}$')
 
 plt.legend(frameon=True)
+# style.despine()
+style.half_ticks()
 plt.savefig('test.pdf')
 plt.show()
 
