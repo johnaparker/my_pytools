@@ -1,0 +1,7 @@
+matplotlib
+
+[ ] animation class to make animations easier (ploting A(x,t) or A(x,y,t))
+    (and moving shapes)
+
+
+
