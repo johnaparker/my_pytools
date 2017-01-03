@@ -67,3 +67,15 @@ def modify_legend(**kwargs):
     plt.legend(**defaults)
 
 
+def colorbar(cmap, vmin, vmax, label=None):
+    """Adds a colorbar to the plot (useful when using colormaps outside of colormeshes)
+            cmap         colormap
+            vmin         minimum value
+            vmax         maximum value
+            label        colorbar label """
+
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=vmin, vmax=vmax))
+    sm._A = []
+    cb = plt.colorbar(sm)   
+    if label:
+        cb.set_label(label)
