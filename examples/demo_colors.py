@@ -63,9 +63,9 @@ with PdfPages("test.pdf") as pdf:
             scale = random.uniform(0.6,2.4)
             scale=1.4
             x = random.normal(size=100, loc=4*i, scale=scale)
-            plt.hist(x, alpha=0.7, bins=10, label = "dist. {}".format(i+1))
+            plt.hist(x, alpha=0.7, bins=10, label = "dist. {}".format(i+1), lw=.00, edgecolor='black')
         # plt.gca().legend(frameon=True, bbox_to_anchor=(1.2,1.05), shadow=True)
-        plt.gca().legend(loc=2,frameon=True, ncol=3, shadow=True)
+        plt.gca().legend(loc=2,frameon=True, ncol=3)
         # plt.xlim(xmin=-20)
 
         plt.xlabel("x label")

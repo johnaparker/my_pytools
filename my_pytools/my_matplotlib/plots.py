@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def mkcmap(): 
     white = '#ffffff'
@@ -66,6 +67,20 @@ def modify_legend(**kwargs):
     defaults.update(kwargs)
     plt.legend(**defaults)
 
+
+
+def fitted_colorbar(im, size="3%", pad=0.15, label=None):
+    """ Add a colorbar that matches the height of the figure
+            im         the image (returned by pcolormesh/imshow)
+            size       the width, as a percentatge ("x%")
+            pad        spacing between figure and colorbar
+            label      colorbar label        """
+    divider = make_axes_locatable(plt.gca())
+    cax = divider.append_axes("right", size=size, pad=pad)
+    if label:
+        plt.colorbar(im,cax=cax, label=label)
+    else:
+        plt.colorbar(im,cax=cax)
 
 def colorbar(cmap, vmin, vmax, label=None):
     """Adds a colorbar to the plot (useful when using colormaps outside of colormeshes)
