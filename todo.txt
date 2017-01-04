@@ -3,5 +3,9 @@ matplotlib
 [ ] animation class to make animations easier (ploting A(x,t) or A(x,y,t))
     (and moving shapes)
 
+[ ] presentation mode using pdfPages and meshplot2grid ?
 
 
+numpy
+
+[ ] Consider the interp2d for more complex 2d interpolation (spline)
