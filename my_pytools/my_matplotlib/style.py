@@ -29,6 +29,7 @@ def default(fontsize=16):
     mpl.rc('figure', facecolor='white')
     mpl.rc('grid', linestyle='-', color='0.5')
     mpl.rc('mathtext', default='rm',fontset='stixsans')
+    mpl.rc('savefig', transparent=True)
 
 
 def paper(cols=1, fontsize=7):
