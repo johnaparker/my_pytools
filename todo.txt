@@ -5,6 +5,10 @@ matplotlib
 
 [ ] presentation mode using pdfPages and meshplot2grid ?
 
+[ ] Axis control over colorbar:
+    [ ] Number of ticks
+    [ ] tighter label
+    [ ] scientific axis
 
 numpy
 
