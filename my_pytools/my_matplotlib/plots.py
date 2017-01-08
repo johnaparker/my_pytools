@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib import ticker
 
 def mkcmap(): 
     white = '#ffffff'
@@ -78,9 +79,11 @@ def fitted_colorbar(im, size="3%", pad=0.15, label=None):
     divider = make_axes_locatable(plt.gca())
     cax = divider.append_axes("right", size=size, pad=pad)
     if label:
-        plt.colorbar(im,cax=cax, label=label)
+        cb = plt.colorbar(im,cax=cax, label=label)
     else:
-        plt.colorbar(im,cax=cax)
+        cb = plt.colorbar(im,cax=cax)
+
+    return cb
 
 def colorbar(cmap, vmin, vmax, label=None):
     """Adds a colorbar to the plot (useful when using colormaps outside of colormeshes)
@@ -94,3 +97,22 @@ def colorbar(cmap, vmin, vmax, label=None):
     cb = plt.colorbar(sm)   
     if label:
         cb.set_label(label)
+    return cb
+
+def top_colorbar(size="3%", pad=0.15, label=None):
+    """ Add a colorbar to the top of the figure
+            size       the width, as a percentatge ("x%")
+            pad        spacing between figure and colorbar
+            label      colorbar label        """
+
+    divider = make_axes_locatable(plt.gca())
+    cax = divider.append_axes("top", size="5%", pad=0.05)
+    cb = plt.colorbar(cax=cax, orientation='horizontal',label = "Angular scattering Intensity",format='%1.1f')
+    cb.ax.xaxis.set_ticks_position('top')
+    cb.ax.xaxis.set_label_position('top')
+
+    tick_locator = ticker.MaxNLocator(nbins=5)
+    cb.locator = tick_locator
+    cb.update_ticks()
+    return cb
+
