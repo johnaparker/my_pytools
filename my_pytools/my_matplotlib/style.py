@@ -74,10 +74,27 @@ r'\renewcommand\familydefault\sfdefault',
 r'\usepackage[symbolgreek,upright]{mathastext}',
 r'\renewcommand\familydefault\rmdefault']
 
-def remove_ticks():
-    """remove x,y ticks, major and minor"""
-    plt.gca().xaxis.set_ticks_position('none') 
-    plt.gca().yaxis.set_ticks_position('none') 
+def remove_ticks(axis='both'):
+    """remove x,y ticks, major and minor
+            axis        x,y or both"""
+    if axis == 'both' or axis == 'x':
+        plt.gca().xaxis.set_ticks_position('none') 
+    if axis == 'both' or axis == 'y':
+        plt.gca().yaxis.set_ticks_position('none') 
+
+def remove_axis_numerics(axis='both'):
+    """remove x,y tick labels
+            axis        x,y or both"""
+    if axis == 'both' or axis == 'x':
+        plt.gca().xaxis.set_major_formatter(plt.NullFormatter())
+    if axis == 'both' or axis == 'y':
+        plt.gca().yaxis.set_major_formatter(plt.NullFormatter())
+
+def remove_axis_labels(axis='both'):
+    """remove x,y tick labels and ticks
+            axis        x,y or both"""
+    remove_ticks(axis)
+    remove_axis_numerics(axis)
 
 def despine():
     """remove top-x and y-right axes"""
