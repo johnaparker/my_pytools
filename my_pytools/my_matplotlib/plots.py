@@ -164,3 +164,12 @@ def set_num_ticks(min_ticks, max_ticks, axis='both'):
     if axis == 'both' or axis == 'y':
         plt.gca().yaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks))
 
+# def axis_pad(axis, side, ax = None):
+def axis_prune(axis, side, ax = None):
+    """ in progress"""
+    if not ax:
+        ax = plt.gca()
+    if axis == 'both' or axis == 'x':
+        ax.xaxis.set_major_locator(MaxNLocator(nbins=5,prune=side))
+    if axis == 'both' or axis == 'y':
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5,prune=side))

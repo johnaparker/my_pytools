@@ -10,6 +10,11 @@ matplotlib
     [ ] tighter label
     [ ] scientific axis
 
+[ ] Using a different formatter
+    [ ] comma separated big numbers (format(x, ','))
+    [ ] fixing semilog plots font family
+
+[ ]  A more useful tighten function
 numpy
 
 [ ] Consider the interp2d for more complex 2d interpolation (spline)
