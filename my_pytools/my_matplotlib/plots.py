@@ -173,3 +173,12 @@ def axis_prune(axis, side, ax = None):
         ax.xaxis.set_major_locator(MaxNLocator(nbins=5,prune=side))
     if axis == 'both' or axis == 'y':
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5,prune=side))
+
+def axis_equal_aspect(ax=None)
+    """set axes aspect ratio to be equal"""
+    if not ax:
+        ax = plt.gca()
+    x0,x1 = ax.get_xlim()
+    y0,y1 = ax.get_ylim()
+    ax.set_aspect((x1-x0)/(y1-y0))
+
