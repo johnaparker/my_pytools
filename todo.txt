@@ -15,6 +15,9 @@ matplotlib
     [ ] fixing semilog plots font family
 
 [ ]  A more useful tighten function
+
+[ ] Consider default savefig.{dpi,bbox,pad_inches} values
+
 numpy
 
 [ ] Consider the interp2d for more complex 2d interpolation (spline)
