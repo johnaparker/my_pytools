@@ -18,6 +18,11 @@ class figsize:
         """return figsize as (width,height)"""
         return np.array((self.width, self.height))
 
+def set_figsize(width, height = None, ratio = 0.8):
+    if not height:
+        height = width*ratio
+    mpl.rc('figure', figsize=(width,height))
+
 def default(fontsize=16):
     """default settings"""
     mpl.rc('font', size=fontsize, family="Arial")

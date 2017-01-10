@@ -52,7 +52,7 @@ with PdfPages("test.pdf") as pdf:
 
         plt.tight_layout()
         plt.ylim([-1,11])
-        plt.legend(loc=2, ncol=3,frameon=True, shadow=True)
+        plt.legend(loc=2, ncol=3,frameon=True )
         plt.xlabel("x label")
         plt.ylabel("y label")
 
