@@ -21,3 +21,5 @@ matplotlib
 numpy
 
 [ ] Consider the interp2d for more complex 2d interpolation (spline)
+
+[ ] Add conversion module to convert between spherical and cylindrical coordinates for scalar and vector fields
