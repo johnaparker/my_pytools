@@ -125,35 +125,46 @@ def top_colorbar(size="3%", pad=0.15, label=None):
     return cb
 
 
-def scientific_axis(precision=1, ax=None):
+def scientific_axis(precision=1, power=None, ax=None, show_multiplier=True):
     """create a scientific_axis on the y-axis
-            precision       floating point precision
-            ax              axis to be used """
+            precision         floating point precision
+            power             set the power value explicitly  
+            ax                axis to be used
+            show_multiplier   If true, draw the multiplier above the axis """
+
     if not ax:
         ax = plt.gca()
-    ymin, ymax = ax.get_ylim()
-    # x = "%.{}e" % ymax 
-    x = "{0:.{1}e}".format(ymax,precision)
 
-    pos = x.find('+')
-    sgn = ''
-    if pos == -1:
-        pos = x.find('-')
-        sgn = '-'
-    n = int(x[pos+1:])
-    if sgn == '-':
-        n *= -1
+    # determine the power value
+    if power == None:
+        ymin, ymax = ax.get_ylim()
+        # x = "%.{}e" % ymax 
+        x = "{0:.{1}e}".format(ymax,precision)
 
+        pos = x.find('+')
+        sgn = ''
+        if pos == -1:
+            pos = x.find('-')
+            sgn = '-'
+        n = int(x[pos+1:])
+        if sgn == '-':
+            n *= -1
+    else:
+        n = power
+
+    # set the formatter
     def formatter(xtick , pos):
         return '{0:.{1}f}'.format(xtick/10**n,precision)
+    ax.yaxis.set_major_formatter( FuncFormatter(formatter) )
 
-    bbox = ax.get_position()
-    x,y = bbox.corners()[1]
-    buff = bbox.height*0.01
-    plt.figtext(x,y+buff, r'$\times \mathregular{{10^{{ {0} }} }}$'.format(n))
+    # draw the multiplier
+    if show_multiplier:
+        bbox = ax.get_position()
+        x,y = bbox.corners()[1]
+        buff = bbox.height*0.01
+        plt.figtext(x,y+buff, r'$\times \, \mathregular{{10^{{ {0} }} }}$'.format(n))
     # embed()
 
-    ax.yaxis.set_major_formatter( FuncFormatter(formatter) )
     # plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     # plt.gca().yaxis.set_major_formatter( FormatStrFormatter('%.1f') )
 
