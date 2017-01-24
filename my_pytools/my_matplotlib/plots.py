@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import ticker
 from matplotlib.ticker import MaxNLocator,MultipleLocator, FormatStrFormatter, FuncFormatter, ScalarFormatter
+import matplotlib as mpl
 
 
 def phase_cmap(): 
@@ -107,15 +108,19 @@ def colorbar(cmap, vmin, vmax, label=None):
         cb.set_label(label)
     return cb
 
-def top_colorbar(size="3%", pad=0.15, label=None):
+def top_colorbar(size="3%", pad=0.15, shrink=1.0, aspect=20, label=None, **colorbar_kw):
     """ Add a colorbar to the top of the figure
             size       the width, as a percentatge ("x%")
             pad        spacing between figure and colorbar
             label      colorbar label        """
 
-    divider = make_axes_locatable(plt.gca())
-    cax = divider.append_axes("top", size="5%", pad=0.05)
-    cb = plt.colorbar(cax=cax, orientation='horizontal',label = "Angular scattering Intensity",format='%1.1f')
+    # divider = make_axes_locatable(plt.gca())
+    # cax = divider.append_axes("top", size="5%", pad=0.05)
+    cax,kw = mpl.colorbar.make_axes(plt.gca(), location='top', shrink=shrink, pad=pad, aspect=aspect)
+    if label: kw['label'] = label
+    kw.update(colorbar_kw)
+    
+    cb = plt.colorbar(cax=cax, format='%1.1f', **kw)
     cb.ax.xaxis.set_ticks_position('top')
     cb.ax.xaxis.set_label_position('top')
 
