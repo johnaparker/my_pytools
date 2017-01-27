@@ -7,7 +7,19 @@ from matplotlib.ticker import MaxNLocator,MultipleLocator, FormatStrFormatter, F
 import matplotlib as mpl
 
 class alpha_labels:
-    def __init__(self, pos = 2, outside=True, str_format='{0}', displacement=(0,0), color='black', background=False, capital=False, bold = True, eps = 0.01, bbox=None):
+    def __init__(self, pos = 2, outside=True, str_format='{0}', displacement=(0,0), color='black', capital=False, bold = True, eps = 0.01, bbox=None):
+        """Create a new alphanumeric label class
+
+                pos          corner anchor of the text (1,2,3,4)
+                outside      if True, place text outside of axes
+                str_format   format string for label
+                displacment  additional displacement vector
+                color        text color
+                capital      if True, start with 'A'
+                bold         if True, letters are bold
+                eps          buffer between axes corner and text
+                bbox         dictionary of values for background of text   """
+
         self.eps = eps
         self.displacement = np.asarray(displacement)
         self.label_ord = 65 if capital else 97
@@ -30,6 +42,9 @@ class alpha_labels:
             pass
 
     def insert(self, ax = None, **kwargs):
+        """Insert an alphanumeric label on axis ax (defaults to current). 
+           Override text options with kwargs"""
+
         if not ax:
             ax = plt.gca()
 
