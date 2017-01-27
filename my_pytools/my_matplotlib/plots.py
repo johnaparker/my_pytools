@@ -38,8 +38,6 @@ class alpha_labels:
         self.text_dict = {'color': color, 'fontweight': 'normal', 'verticalalignment':verticalalignment, 'horizontalalignment':horizontalalignment, 'bbox':bbox}
 
         if bold == True: self.text_dict['fontweight'] = 'bold'
-        if background:
-            pass
 
     def insert(self, ax = None, **kwargs):
         """Insert an alphanumeric label on axis ax (defaults to current). 
