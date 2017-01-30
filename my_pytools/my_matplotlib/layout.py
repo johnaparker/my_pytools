@@ -59,7 +59,8 @@ class alpha_labels:
 
 class panels:
     def __init__(self, nrows, ncols=1, hspace = 0.1, wspace=0.1, width_ratios=None, height_ratios=None, left=0.1, top=0.9, right=0.9, bottom=0.1):
-        """create a grid of gridspecs for flexible figure layouts
+        """Create a grid of gridspecs for flexible figure layouts
+
                 nrows                  number of rows
                 ncols                  number of columns
                 hspace                 gap space between rows
@@ -92,9 +93,10 @@ class panels:
         self.top = top
 
     def add(self, gs_index, shape, hspace = 0.2, wspace=0.2, width_ratios=None, height_ratios=None, left_pad=0, right_pad=0, bottom_pad=0, top_pad=0):
-        """add a gridpec to the panel
-                gs_index[2]          (i,j) index of panel number
-                shape[2]             (nrows,ncols) for gridspec shape
+        """Add a gridpec to the panel, and return it
+
+                gs_index               (i,j) index of panel number; default j=0
+                shape                  (nrows,ncols) for gridspec shape; default nrows=1
                 hspace                 gap space between rows
                 wspace                 gap space between columns
                 width_ratios[ncols]    relative ratios of column widths
@@ -103,6 +105,11 @@ class panels:
                 top_pad                gridpec top pad
                 right_pad              gridpec right pad
                 bottom_pad             gridpec bottom pad     """
+
+        if not hasattr(gs_index, '__iter__'):
+            gs_index = (gs_index,0)
+        if not hasattr(shape, '__iter__'):
+            shape = (1,shape)
 
         width = self.width_panels[gs_index[1]]
         height = self.height_panels[gs_index[0]]
@@ -129,6 +136,7 @@ class panels:
 
 def divide_gridspec(gs, index, gap=0, fig=None, gs1_size=None, gs2_size=None, gs1_widths=None, gs2_widths=None):
     """Divide a gridspec into 2 gridspecs along a vertical axis
+
             gs              gridpsec object
             index           number of figures left of the cut
             gap             distance added between two halves
