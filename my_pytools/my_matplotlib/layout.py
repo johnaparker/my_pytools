@@ -259,8 +259,16 @@ def embed_anchored_image(img, width, loc=1, pad=0.1, ax=None):
     dpi = img.shape[1]/width
     return new_ax,dpi
 
+def annotate(ax = None, arrow_props = None, **kwargs):
+    """default annotate"""
 
+    if not ax:
+        ax = plt.gca()
 
+    final_arrow_props = dict(arrowstyle='->', connectionstyle='arc3,rad=-0.3', linewidth=0.7, shrinkA=0, shrinkB=0)
+    final_arrow_props.update(arrow_props)
+
+    return ax.annotate(text, xy=xy, xy_text=xy_text, arrow_props=final_arrow_props, **kwargs)
 
 ### To be implemented
 def axis_to_fig(width, height, ax = None):
