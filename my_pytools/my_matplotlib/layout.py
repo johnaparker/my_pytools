@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.gridspec as gridspec
+from mpl_toolkits.axes_grid.inset_locator import inset_axes
 
 
 class alpha_labels:
@@ -50,10 +51,19 @@ class alpha_labels:
 
         displace = self.rhat*self.eps + self.displacement
 
+        width = ax.bbox.width
+        height = ax.bbox.height
+        print(width)
+        print(height)
+
         # add text label
         dict_args = self.text_dict.copy()
         dict_args.update(kwargs)
-        ax.text(self.xpos+displace[0],self.ypos+displace[1],label, transform=ax.transAxes, **dict_args)
+        x = (self.xpos + displace[0])
+        y = (self.ypos + displace[1])
+        # x = x**(300/width)
+        # y = y**(300/height)
+        ax.text(x,y,label, transform=ax.transAxes, **dict_args)
 
 
 
@@ -185,3 +195,98 @@ def divide_gridspec(gs, index, gap=0, fig=None, gs1_size=None, gs2_size=None, gs
 
     return gs1,gs2
 
+
+def get_axis_width_inches(ax):
+    """Return the width of an axes in inches"""
+
+    fig = ax.figure
+    fig_width_inches = fig.bbox_inches.width
+    fig_width_pixels = fig.bbox.width
+    axis_width_pixels = ax.bbox.width
+
+    axis_width_inches = axis_width_pixels/fig_width_pixels*fig_width_inches
+    return axis_width_inches
+
+def embed_anchored_axis(width, height=None, aspect_ratio=None, loc=1, pad=0.5, ax = None):
+    """Add an embedded anchored axis to current axis. Returns the new axis
+
+            width             new axis width (inches or "x%" of current ax width)
+            height            new axis height (inches or "x%" of current ax width)
+            aspect_ratio      if specified, set height based on heigh/width ratio
+            loc               standard axis locator to anchor to
+            pad               amount to pad between new axis and ax
+            ax                axis (defualt to current)   """
+
+    if not ax:
+        ax = plt.gca()
+
+    if not height and not aspect_ratio:
+        raise ValueError("Either height or aspect_ratio must be given")
+
+    if aspect_ratio:
+        if type(width) == str:
+            axes_width_inches = get_axis_width_inches(ax)
+            frac = float(width.strip('%'))/100
+            height = frac*axes_width_inches*aspect_ratio
+        else:
+            height = width*aspect_ratio
+
+    new_ax = inset_axes(ax, width=width, height=height, loc=loc, borderpad=pad)
+
+    return new_ax
+
+def embed_anchored_image(img, width, loc=1, pad=0.1, ax=None):
+    """Add an embedded anchored image to current axis. Returns (new_axis, dpi)
+       where dpi is the dpi of the image in this axis
+
+            width             new axis width (inches or "x%" of current ax width)
+            loc               standard axis locator to anchor to
+            pad               amount to pad between new axis and ax
+            ax                axis (defualt to current)   """
+
+    if not ax:
+        ax = plt.gca()
+
+    if type(width) == str:
+        axis_width_inches = get_axis_width_inches(ax)
+
+        frac = float(width.strip('%'))/100
+        width = frac*axis_width_inches
+
+    aspect_ratio = img.shape[0]/img.shape[1]
+    new_ax = embed_anchored_axis(width=width, loc=loc, pad=pad, ax=ax, aspect_ratio=aspect_ratio)
+
+    dpi = img.shape[1]/width
+    return new_ax,dpi
+
+
+
+
+### To be implemented
+def axis_to_fig(width, height, ax = None):
+    """convert axis point to figure point"""
+    pass
+    if not ax:
+        ax = plt.gca()
+    fig = ax.figure
+
+def embed_axis():
+    """embed axis at corner [xc,yc] with size [w,h]"""
+    pass
+def embed_image():
+    """embed image at corner [xc,yc] with size [w,h]"""
+    pass
+    # x,y = ax.bbox.corners()[0]
+    # w = ax.bbox.width
+    # h = ax.bbox.height
+    # x += w/2
+    # y += h/2
+    # W = fig.bbox.width
+    # H = fig.bbox.height
+    # fig.add_axes((x/W, y/H, w/W/2, h/H/2))
+    # embed()
+
+    # bbox_to_anchor=[1,2,3,4]
+    # plt.axis('off')
+    # img = np.fliplr(img)
+    # plt.imshow(img)
