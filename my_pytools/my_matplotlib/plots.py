@@ -6,56 +6,6 @@ from matplotlib import ticker
 from matplotlib.ticker import MaxNLocator,MultipleLocator, FormatStrFormatter, FuncFormatter, ScalarFormatter
 import matplotlib as mpl
 
-class alpha_labels:
-    def __init__(self, pos = 2, outside=True, str_format='{0}', displacement=(0,0), color='black', capital=False, bold = True, eps = 0.01, bbox=None):
-        """Create a new alphanumeric label class
-
-                pos          corner anchor of the text (1,2,3,4)
-                outside      if True, place text outside of axes
-                str_format   format string for label
-                displacment  additional displacement vector
-                color        text color
-                capital      if True, start with 'A'
-                bold         if True, letters are bold
-                eps          buffer between axes corner and text
-                bbox         dictionary of values for background of text   """
-
-        self.eps = eps
-        self.displacement = np.asarray(displacement)
-        self.label_ord = 65 if capital else 97
-        self.str_format = str_format
-
-        verticalalignment = 'top' if (pos,outside) in ((1,False),(2,False),(3,True),(4,True)) else 'bottom'
-        horizontalalignment = 'right' if (pos,outside) in ((1,False),(2,True),(3,True),(4,False)) else 'left'
-
-        self.xpos = 1 if pos in (1,4) else 0
-        self.ypos = 1 if pos in (1,2) else 0
-
-        phi = np.pi*pos/2 - np.pi/4
-        sgn = 1 if outside else -1 
-        self.rhat = sgn*np.array([np.cos(phi), np.sin(phi)])
-
-        self.text_dict = {'color': color, 'fontweight': 'normal', 'verticalalignment':verticalalignment, 'horizontalalignment':horizontalalignment, 'bbox':bbox}
-
-        if bold == True: self.text_dict['fontweight'] = 'bold'
-
-    def insert(self, ax = None, **kwargs):
-        """Insert an alphanumeric label on axis ax (defaults to current). 
-           Override text options with kwargs"""
-
-        if not ax:
-            ax = plt.gca()
-
-        # get label and increment label counter
-        label = self.str_format.format(chr(self.label_ord))
-        self.label_ord += 1
-
-        displace = self.rhat*self.eps + self.displacement
-
-        # add text label
-        dict_args = self.text_dict.copy()
-        dict_args.update(kwargs)
-        ax.text(self.xpos+displace[0],self.ypos+displace[1],label, transform=ax.transAxes, **dict_args)
 
 def phase_cmap(): 
     """ Return a black-white scale phase color map"""
