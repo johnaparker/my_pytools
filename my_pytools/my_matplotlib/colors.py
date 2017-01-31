@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import colorsys
 from matplotlib.colors import LinearSegmentedColormap
+import matplotlib
 
 
 def hex_to_rgb(value):
@@ -137,6 +138,18 @@ parula_data = [[0.2081, 0.1663, 0.5292], [0.2116238095, 0.1897809524, 0.57767619
   0.0948380952], [0.9661, 0.9514428571, 0.0755333333], 
  [0.9763, 0.9831, 0.0538]]
 
+def phase_cmap(): 
+    """ Return a black-white scale phase color map"""
+    white = '#ffffff'
+    black = '#000000'
+    red = '#ff0000'
+    blue = '#0000ff'
+    anglemap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        'anglemap', [black, white, black], N=256, gamma=1)
+    return anglemap
+
+
 cmap = {'parula': LinearSegmentedColormap.from_list('parula', parula_data),
-        'viridis_short': truncate_colormap(mpl.cm.viridis, maxval=0.92)}
+        'viridis_short': truncate_colormap(mpl.cm.viridis, maxval=0.92),
+        'phase': phase_cmap()}
 

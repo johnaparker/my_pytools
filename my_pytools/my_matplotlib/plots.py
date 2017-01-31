@@ -7,16 +7,6 @@ from matplotlib.ticker import MaxNLocator,MultipleLocator, FormatStrFormatter, F
 import matplotlib as mpl
 
 
-def phase_cmap(): 
-    """ Return a black-white scale phase color map"""
-    white = '#ffffff'
-    black = '#000000'
-    red = '#ff0000'
-    blue = '#0000ff'
-    anglemap = matplotlib.colors.LinearSegmentedColormap.from_list(
-        'anglemap', [black, white, black], N=256, gamma=1)
-    return anglemap
-
 def pcolor_z_info(data,xdata,ydata, ax=None):
     """ Allow pcolor data to be seen interactively in the plot
             data        2-d data
