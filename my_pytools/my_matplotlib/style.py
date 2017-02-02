@@ -52,7 +52,7 @@ def paper(cols=1, fontsize=7):
 
     return size
 
-def screen(fontsize=25):
+def screen(fontsize=22):
     """screen settings"""
     default(fontsize)
     mpl.rc('lines', linewidth=3)
@@ -60,7 +60,7 @@ def screen(fontsize=25):
     mpl.rcParams.update({'xtick.major.size': 7.0, 'ytick.major.size': 7.0})
     mpl.rcParams.update({'xtick.major.width': 1.5, 'ytick.major.width': 1.5})
     
-    size = figsize(12)
+    size = figsize(9)
     mpl.rc('figure', figsize=size.get())
 
     return size
