@@ -163,12 +163,12 @@ def scientific_axis(precision=1, power=None, ax=None, show_multiplier=True):
     # plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     # plt.gca().yaxis.set_major_formatter( FormatStrFormatter('%.1f') )
 
-def set_num_ticks(min_ticks, max_ticks, axis='both'):
+def set_num_ticks(min_ticks, max_ticks, axis='both', prune=None):
     """ Set bounds on the number of ticks """
     if axis == 'both' or axis == 'x':
-        plt.gca().xaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks))
+        plt.gca().xaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
     if axis == 'both' or axis == 'y':
-        plt.gca().yaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks))
+        plt.gca().yaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
 
 # def axis_pad(axis, side, ax = None):
 def axis_prune(axis, side, ax = None):
