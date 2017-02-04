@@ -163,22 +163,18 @@ def scientific_axis(precision=1, power=None, ax=None, show_multiplier=True):
     # plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
     # plt.gca().yaxis.set_major_formatter( FormatStrFormatter('%.1f') )
 
+def set_axis_formatter(format_str = '%.1f', axis='both'):
+    if axis == 'both' or axis == 'x':
+        plt.gca().xaxis.set_major_formatter( FormatStrFormatter(format_str) )
+    if axis == 'both' or axis == 'y':
+        plt.gca().yaxis.set_major_formatter( FormatStrFormatter(format_str) )
+
 def set_num_ticks(min_ticks, max_ticks, axis='both', prune=None):
     """ Set bounds on the number of ticks """
     if axis == 'both' or axis == 'x':
         plt.gca().xaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
     if axis == 'both' or axis == 'y':
         plt.gca().yaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
-
-# def axis_pad(axis, side, ax = None):
-def axis_prune(axis, side, ax = None):
-    """ in progress"""
-    if not ax:
-        ax = plt.gca()
-    if axis == 'both' or axis == 'x':
-        ax.xaxis.set_major_locator(MaxNLocator(nbins=5,prune=side))
-    if axis == 'both' or axis == 'y':
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=5,prune=side))
 
 def axis_equal_aspect(ax=None):
     """set axes aspect ratio to be equal"""
