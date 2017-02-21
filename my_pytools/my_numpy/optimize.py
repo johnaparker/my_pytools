@@ -34,8 +34,8 @@ if __name__ == "__main__":
     noise_i = np.random.normal(scale=0.05, size=(100,))
     y = f(x,1,3) + noise + noise_i*1j
 
-    plt.plot(x, y.real, label = 'real, exact')
-    plt.plot(x, y.imag, label = 'imag, exact')
+    plt.scatter(x, y.real, label = 'real, exact', s=10)
+    plt.scatter(x, y.imag, label = 'imag, exact', s=10)
 
     vals,pcov = complex_curve_fit(f, x, y, p0=(2,2))
     yfit = f(x, *vals)
