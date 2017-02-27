@@ -113,67 +113,27 @@ def VSH_electric_scat(n, m):
 
     return N
 
-def riccati_1(nmax,x):
-    """Riccati bessel function of the 1st kind
 
-       returns (r1, r1'), n=0,1,...,nmax"""
+##### riccati needs to be verified with miepy #####
 
-    jn,jnp = special.sph_jn(nmax,x)
+def riccati_1(n,z, derivative = False):
+    jn = special.spherical_jn(n, z)
 
-    r0 = x*jn
-    r1 = jn + x*jnp
-    return np.array([r0,r1])
+    if derivative:
+        jn_p = special.spherical_jn(n, z, derivative=True)
+        return z*jn_p + jn
+    return z*jn
 
-def riccati_2(nmax,x):
-    """Riccati bessel function of the 2nd kind
+def riccati_2(n,z, derivative = False):
+    yn = special.spherical_yn(n, z, derivative = derivative) 
 
-       returns (r2, r2'), n=0,1,...,nmax"""
+    if derivative:
+        yn_p = special.spherical_yn(n, z, derivative=True)
+        return -z*yn_p - yn
+    return -z*yn
 
-    jn,jnp,yn,ynp = special.sph_jnyn(nmax,x)
-    hn = jn + 1j*yn
-    hnp = jnp + 1j*ynp
-
-    r0 = x*hn
-    r1 = hn + x*hnp
-    return np.array([r0,r1])
-
-def riccati_3(nmax,x):
-    """Riccati bessel function of the 3rd kind
-
-       returns (r3, r3'), n=0,1,...,nmax"""
-
-    yn,ynp = special.sph_yn(nmax,x)
-
-    r0 = x*yn
-    r1 = yn + x*ynp
-    return np.array([r0,r1])
-
-def riccati_1_single(n,x):
-    """Riccati_1, but only a single n value"""
-    pre = (np.pi*x/2)**.5
-    jn = pre*special.jv(n+0.5,x)
-    jnp = jn/(2*x) + pre*special.jvp(n+0.5,x)
-
-    return np.array([jn,jnp])
-
-def riccati_2_single(n,x):
-    """Riccati_2, but only a single n value"""
-    pre = (np.pi*x/2)**.5
-    hn = pre*special.hankel1(n+0.5,x)
-    hnp = hn/(2*x) + pre*special.h1vp(n+0.5,x)
-
-    return np.array([hn,hnp])
-
-def riccati_3_single(n,x):
-    """Riccati_3, but only a single n value"""
-    # pre = (np.pi*x/2)**.5
-    # yn = pre*special.yv(n+0.5,x)
-    # ynp = yn/(2*x) + pre*special.yvp(n+0.5,x)
-
-    # return np.array([yn,ynp])
-    return riccati_2_single(n,x) - riccati_1_single(n,x)
-
-
+def riccati_3(n,z, derivative = False):
+    return riccati_2(n,z, derivative) - riccati_1(n,z, derivative)
 
 ###### below are pi,tau,VSH used in Mie theory, which may differ from those defined above ######
 
