@@ -4,6 +4,9 @@ from .rotations import rotate_discrete_data
 
 def simps_2d(xd,yd,fd):
     """1d simpsons rule extended to 2d"""
+    if np.iscomplexobj(fd):
+        return simps_2d(xd, yd, fd.real) + 1j*simps_2d(xd, yd, fd.imag)
+
     xData = np.zeros(len(xd))
     for i,x in enumerate(xd):
         xData[i] = simps(fd[i,:], yd)
