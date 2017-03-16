@@ -28,10 +28,10 @@ def default(fontsize=16):
     mpl.rc('font', size=fontsize, family="Arial")
     mpl.rc('lines', linewidth=2, solid_capstyle="round")
     mpl.rc('axes', axisbelow=True, titlesize=fontsize, labelsize=fontsize)
-    mpl.rc('legend', frameon=False, fontsize=fontsize)
     mpl.rc('xtick', direction="out", labelsize=fontsize)
     mpl.rc('ytick', direction="out", labelsize=fontsize)
     mpl.rc('figure', facecolor='white')
+    mpl.rc('legend', fontsize=fontsize)
     mpl.rc('grid', linestyle='-', color='0.5')
     mpl.rc('mathtext', default='rm',fontset='stixsans')
     mpl.rc('savefig', transparent=True)
@@ -44,6 +44,7 @@ def paper(cols=1, fontsize=7):
     mpl.rc('axes', linewidth=0.5)
     mpl.rcParams.update({'xtick.major.size': 2.0, 'ytick.major.size': 2.0})
     mpl.rcParams.update({'xtick.major.width': 0.5, 'ytick.major.width': 0.5})
+    mpl.rc('legend', frameon=False)
 
     widths = {3: 2, 2: 3, 1: 4}
 
