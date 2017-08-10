@@ -13,8 +13,11 @@ from my_pytools.my_matplotlib.geometry import rotation_transform
 # For X,Y,U,V data, allow animated quiver
 
 # possibly allow sprites, pcolormesh, and quiver animations to be overlapped easily
+#TODO instead of full numpy arrays for raw data, use generators to compute on the fly
 
 
+#TODO use matplotlib collections, patchcollection instead of python lists for performance
+#TODO include zorder
 def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, xlim=None, ylim=None,
         colors=['C0'], trail=0, time=None, number_labels=False):
     """create a 2D animation of trajectories
@@ -61,7 +64,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, x
         coordinate = coordinates[i,:,0]
         color = next(color_cycle)
 
-        circles.append(plt.Circle(coordinate, radii[i], edgecolor=color, fc='white', lw=2, animated=True))
+        circles.append(plt.Circle(coordinate, radii[i], edgecolor=color, fc=(1,1,1,0), lw=2, animated=True))
         ax.add_artist(circles[-1])
 
         if angles is not None:
@@ -127,4 +130,5 @@ if __name__ == "__main__":
     
     plt.figure()
     anim = trajectory_animation(coordinates, radii, 'z', colors=[f'C{i}' for i in range(10)], angles=angles, time = t, trail=np.inf, number_labels=True)
+    anim.save('temp.mp4', dpi=150)
     plt.show()
