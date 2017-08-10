@@ -21,10 +21,10 @@ from my_pytools.my_matplotlib.geometry import rotation_transform
 def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, xlim=None, ylim=None,
         colors=['C0'], trail=0, time=None, number_labels=False):
     """create a 2D animation of trajectories
-            coordinates[N,3,T]         particle x,y,z coordinates 
+            coordinates[T,N,3]         particle x,y,z coordinates 
             radii[N]                   particle radii
             projection ('x','y','z')   which plane to project 3D trajectories onto
-            angles[N,T]                particle angles
+            angles[T,N]                particle angles
             ax (default None)          specify the axes of the animation
             xlim[2]                    min,max values of x-axis
             ylim[2]                    min,max values of y-axis
@@ -41,18 +41,17 @@ def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, x
 
     idx = [0,1,2]
     idx.pop(ord(projection) - ord('x'))
-    coordinates = coordinates[:,idx,:]
-    Nparticles,_,Nt = coordinates.shape
+    coordinates = coordinates[...,idx]
+    Nt,Nparticles,_ = coordinates.shape
 
     if ax is None:
         ax = plt.gca()
     if xlim is None:
-        radii[np.newaxis,:]
-        xlim = np.array([np.min(coordinates[:,0,:] - 1.3*radii[:,np.newaxis]),
-                         np.max(coordinates[:,0,:] + 1.3*radii[:,np.newaxis])])
+        xlim = np.array([np.min(coordinates[...,0] - 1.3*radii),
+                         np.max(coordinates[...,0] + 1.3*radii)])
     if ylim is None:
-        ylim = np.array([np.min(coordinates[:,1,:] - 1.3*radii[:,np.newaxis]),
-                         np.max(coordinates[:,1,:] + 1.3*radii[:,np.newaxis])])
+        ylim = np.array([np.min(coordinates[...,1] - 1.3*radii),
+                         np.max(coordinates[...,1] + 1.3*radii)])
     color_cycle = cycle(colors)
 
     circles = []
@@ -61,7 +60,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, x
     text = {}
 
     for i in range(Nparticles): 
-        coordinate = coordinates[i,:,0]
+        coordinate = coordinates[0,i]
         color = next(color_cycle)
 
         circles.append(plt.Circle(coordinate, radii[i], edgecolor=color, fc=(1,1,1,0), lw=2, animated=True))
@@ -72,7 +71,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, x
             ax.add_line(lines[-1])
 
         if trail > 0:
-            trails.append(plt.plot([coordinates[i,0,0]], [coordinates[i,1,0]], color=color)[0])
+            trails.append(plt.plot([coordinate[0]], [coordinate[1]], color=color)[0])
         
         if number_labels:
             label = str(i+1)
@@ -86,20 +85,20 @@ def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, x
 
     def update(t):
         for i in range(Nparticles): 
-            coordinate = coordinates[i,:,t]
+            coordinate = coordinates[t,i]
             circles[i].center = coordinate
 
             if angles is not None:
                 lines[i].set_data([coordinate[0]-radii[i], coordinate[0]+radii[i]], [coordinate[1], coordinate[1]])
-                lines[i].set_transform(rotation_transform(coordinate, angles[i,t], ax=ax))
+                lines[i].set_transform(rotation_transform(coordinate, angles[t,i], ax=ax))
 
             if time is not None:
                 text['clock'].set_text(r"{0:.2f} $\mu$s".format(t))
 
             if trail > 0:
                 tmin = max(0,t-trail)
-                trails[i].set_xdata(coordinates[i,0,tmin:t])
-                trails[i].set_ydata(coordinates[i,1,tmin:t])
+                trails[i].set_xdata(coordinates[tmin:t,i,0])
+                trails[i].set_ydata(coordinates[tmin:t,i,1])
             
             if number_labels:
                 text[str(i+1)].set_position(coordinate + np.array([-radii[i], radii[i]]))
@@ -115,8 +114,8 @@ if __name__ == "__main__":
     N = 8
     Nt = 300
     t = np.linspace(0,100,Nt)
-    coordinates = np.zeros([N, 3, Nt])
-    angles = np.zeros([N,Nt])
+    coordinates = np.zeros([Nt, N, 3])
+    angles = np.zeros([Nt,N])
     radii = np.ones(N)
     omega = .3
 
@@ -125,10 +124,10 @@ if __name__ == "__main__":
         y = 3*i*np.ones_like(t) + 0.15*np.random.random(Nt)
         z = np.zeros_like(t)
 
-        coordinates[i] = np.array([x,y,z])
-        angles[i] = omega*t
+        coordinates[:,i,:] = np.array([x,y,z]).T
+        angles[:,i] = omega*t
     
     plt.figure()
     anim = trajectory_animation(coordinates, radii, 'z', colors=[f'C{i}' for i in range(10)], angles=angles, time = t, trail=np.inf, number_labels=True)
-    anim.save('temp.mp4', dpi=150)
+    # anim.save('temp.mp4', dpi=150)
     plt.show()
