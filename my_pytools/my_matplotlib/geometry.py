@@ -1,5 +1,8 @@
 """Helper functions for 2d sprites"""
 
+import matplotlib as mpl
+import numpy as np
+
 def rotation_transform(axis, angle, ax = None):
     """Return a rotation transfrom that rotates around an axis by an angle
             axix[2]       (x,y) center of rotation
