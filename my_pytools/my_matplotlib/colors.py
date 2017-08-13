@@ -176,6 +176,7 @@ class colored_line:
         self.collection = LineCollection(segments, **kwargs)
         self.collection.set_edgecolor(c)
 
+
     def set_data(self, x, y, c=None):
         """Set new x and y data, optionally new color data
                x[N]                   xdata
@@ -215,6 +216,9 @@ class colored_line:
         """
         self.collection.set_edgecolor(c)
 
+    def set_animated(self, animated):
+        self.collection.set_animated(animated)
+
 def colored_plot(x, y, c, ax=None, **kwargs):
     """Like matplotlib plot, but use a list of colors c for variable color. Return a colored_line
             x[N]                   xdata
@@ -228,6 +232,10 @@ def colored_plot(x, y, c, ax=None, **kwargs):
     line = colored_line(x,y,c, **kwargs)
 
     ax.add_collection(line.collection)
+    line.axes = line.collection.axes
+    line.figure = line.collection.figure
+    line.draw = line.collection.draw
+
     return line
 
 
