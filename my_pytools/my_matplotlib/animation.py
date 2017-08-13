@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from itertools import cycle
 from matplotlib import animation
 from my_pytools.my_matplotlib.geometry import rotation_transform
+import matplotlib.patheffects as path_effects
 
 # Given X[N], Y[N,T], plot animated line
 # Given f(x), f(y,t), plot animated line
@@ -63,19 +64,21 @@ def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, x
         coordinate = coordinates[0,i]
         color = next(color_cycle)
 
-        circles.append(plt.Circle(coordinate, radii[i], edgecolor=color, fc=(1,1,1,0), lw=2, animated=True))
+        circles.append(plt.Circle(coordinate, radii[i], edgecolor=color, fc=(1,1,1,0), lw=2, animated=True, zorder=1))
         ax.add_artist(circles[-1])
 
         if angles is not None:
-            lines.append(plt.Line2D([coordinate[0]-radii[i], coordinate[0]+radii[i]], [coordinate[1], coordinate[1]], lw=2, color=color, animated=True))
+            lines.append(plt.Line2D([coordinate[0]-radii[i], coordinate[0]+radii[i]], [coordinate[1], coordinate[1]], lw=2, color=color, animated=True, zorder=2))
             ax.add_line(lines[-1])
 
         if trail > 0:
-            trails.append(plt.plot([coordinate[0]], [coordinate[1]], color=color)[0])
+            trails.append(plt.plot([coordinate[0]], [coordinate[1]], color=color, zorder=0)[0])
         
         if number_labels:
             label = str(i+1)
-            text[label] = ax.text(*coordinate, label,horizontalalignment='right', animated=True)
+            text[label] = ax.text(*coordinate, label,horizontalalignment='right', animated=True, fontsize=14)
+            text[label].set_path_effects([path_effects.Stroke(linewidth=3, foreground='white'),
+                       path_effects.Normal()])
 
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
@@ -111,6 +114,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, ax=None, x
 
 
 if __name__ == "__main__":
+    # plt.xkcd()
     N = 8
     Nt = 300
     t = np.linspace(0,100,Nt)
@@ -121,7 +125,7 @@ if __name__ == "__main__":
 
     for i in range(N):
         x = 3*np.cos(omega*t + 0.4*i)
-        y = 3*i*np.ones_like(t) + 0.15*np.random.random(Nt)
+        y = 2.5*i*np.ones_like(t) + 0.15*np.random.random(Nt)
         z = np.zeros_like(t)
 
         coordinates[:,i,:] = np.array([x,y,z]).T

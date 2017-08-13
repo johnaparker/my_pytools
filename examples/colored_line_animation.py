@@ -10,13 +10,13 @@ c = np.zeros((100,4))
 c[:,0:3] = colors.to_rgb('C0')
 c[:,3] = np.linspace(0,1,100)**1.5
 
-line1 = colored_plot(x,y,c, linewidth=2, animated=True)
+line1 = colored_plot(x,y,c, linewidth=3, animated=True)
 c[:,0:3] = colors.to_rgb('C1')
-line2 = colored_plot(x,y,c, linewidth=2, animated=True)
+line2 = colored_plot(x,y,c, linewidth=3, animated=True)
 
 def update(frame):
     t0 = 0.01*frame
-    tf = t0 + 2*np.pi/3
+    tf = t0 + 3*np.pi/3
     theta = np.linspace(t0, tf, 100)
     x = np.cos(theta)
     y = np.sin(theta)
@@ -32,6 +32,8 @@ def update(frame):
 plt.xlim([-1.5,1.5])
 plt.ylim([-1.5,1.5])
 plt.gca().set_aspect('equal')
-anim = FuncAnimation(plt.gcf(), update, frames=np.arange(0,1000), repeat=True, interval=30, blit=True)
+plt.axis('off')
+anim = FuncAnimation(plt.gcf(), update, frames=np.arange(0,round(2*np.pi/0.01)), repeat=True, interval=5, blit=True)
+# anim.save('out.mp4')
 plt.show()
 
