@@ -17,11 +17,9 @@ import matplotlib.patheffects as path_effects
 # For X,Y,U,V data, allow animated quiver
 
 # possibly allow sprites, pcolormesh, and quiver animations to be overlapped easily
+
 #TODO instead of full numpy arrays for raw data, use generators to compute on the fly
-
-
 #TODO use matplotlib collections, patchcollection instead of python lists for performance
-#TODO include zorder
 def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C0'], ax=None,
         xlim=None, ylim=None, time=None, number_labels=False, trail=0, trail_type='normal',
         time_kwargs={}, label_kwargs={}, circle_kwargs={}, trail_kwargs={}, fading_kwargs={}):
@@ -45,7 +43,9 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
             trail_kwargs               additional arguments to line trail properies
             fading_kwargs              Fading line properites, {max_lw, min_lw}
     """
-
+    trail_types = ['normal', 'fading']
+    if trail_type not in trail_types:
+        raise ValueError("trail_type '{}' is not valid. Choose from {}".format(trail_type, trail_types))
     if (trail_type == 'fading' and trail == np.inf):
         raise ValueError("trail cannot be fading and infinite")
 
