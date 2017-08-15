@@ -9,6 +9,7 @@ from matplotlib import animation
 from my_pytools.my_matplotlib.geometry import rotation_transform
 from my_pytools.my_matplotlib.colors import colored_plot
 import matplotlib.patheffects as path_effects
+from tqdm import tqdm
 
 # Given X[N], Y[N,T], plot animated line
 # Given f(x), f(y,t), plot animated line
@@ -19,6 +20,25 @@ import matplotlib.patheffects as path_effects
 # possibly allow sprites, pcolormesh, and quiver animations to be overlapped easily
 
 #TODO instead of full numpy arrays for raw data, use generators to compute on the fly
+
+def save_animation(anim, filename, *args, **kwargs):
+    """A wrapper for anim.save(...) that shows the progress of the saving
+
+            anim        animation object
+            filename    file output name
+            *args       additional arguments to pass to anim.save
+            **kwargs    additional keyword arguments to pass to anim.save
+    """
+    progress = tqdm(total = anim.save_count+1, ascii=True, desc="Saving video '{}'".format(filename))
+    store_func = anim._func
+    def wrapper(*args):
+        progress.update()
+        return store_func(*args)
+    anim._func = wrapper
+    anim.save(filename, *args, **kwargs)
+    anim._func = store_func
+    progress.close()
+
 #TODO use matplotlib collections, patchcollection instead of python lists for performance
 def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C0'], ax=None,
         xlim=None, ylim=None, time=None, number_labels=False, trail=0, trail_type='normal',
