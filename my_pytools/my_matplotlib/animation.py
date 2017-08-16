@@ -126,13 +126,13 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
 
         if trail > 0:
             if trail_type == 'normal':
-                trails.append(plt.plot([coordinate[0]], [coordinate[1]], color=color, **trail_properties)[0])
+                trails.append(ax.plot([coordinate[0]], [coordinate[1]], color=color, **trail_properties)[0])
             elif trail_type == 'fading':
                 c = np.zeros((trail,4))
                 c[:,0:3] = matplotlib.colors.to_rgb(color)
                 c[:,3] = np.linspace(1,0,trail)
                 lw = np.linspace(fading_properties['max_lw'],fading_properties['min_lw'],trail)
-                trails.append(colored_plot([coordinate[0]], [coordinate[1]], c, linewidth=lw, **trail_properties))
+                trails.append(colored_plot([coordinate[0]], [coordinate[1]], c, ax=ax, linewidth=lw, **trail_properties))
 
         
         if number_labels:
