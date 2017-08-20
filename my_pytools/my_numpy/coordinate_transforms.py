@@ -60,12 +60,13 @@ def sph_to_cart_range(func):
         return rhat*func_ret[0] + theta_hat*func_ret[1] + phi_hat*func_ret[2]
     return g
 
-g = cart_to_sph_domain(f)
-g = sph_to_cart_range(f)
+if __name__ == "__main__":
+    g = cart_to_sph_domain(f)
+    g = sph_to_cart_range(f)
 
 
-R, THETA, PHI = np.meshgrid(np.array([1]), theta,phi, indexing='ij')
-print(g(R,THETA,PHI).shape)
-# THETA, PHI = np.meshgrid(theta,phi, indexing='ij')
-# print(g(1,THETA,PHI).shape)
+    R, THETA, PHI = np.meshgrid(np.array([1]), theta,phi, indexing='ij')
+    print(g(R,THETA,PHI).shape)
+    # THETA, PHI = np.meshgrid(theta,phi, indexing='ij')
+    # print(g(1,THETA,PHI).shape)
 
