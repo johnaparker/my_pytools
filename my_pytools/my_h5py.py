@@ -1,4 +1,5 @@
 import h5py
+import numpy as np
 
 def write_over(group, name, data):
     """write over group[data] if it exists, otherwise create it
