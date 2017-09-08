@@ -5,3 +5,4 @@ from . import indices
 from . import coordinate_transforms
 from . import special
 from . import optimize
+from . import array

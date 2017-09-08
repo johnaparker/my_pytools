@@ -8,6 +8,7 @@ import matplotlib
 from matplotlib import animation
 from my_pytools.my_matplotlib.geometry import rotation_transform
 from my_pytools.my_matplotlib.colors import colored_plot
+from my_pytools.my_numpy.array import atleast
 import matplotlib.patheffects as path_effects
 from tqdm import tqdm
 
@@ -46,7 +47,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
     """create a 2D animation of trajectories
 
             coordinates[T,N,3]         particle x,y,z coordinates 
-            radii[N]                   particle radii
+            radii[N] or scalar         particle radii
             projection ('x','y','z')   which plane to project 3D trajectories onto
             angles[T,N]                particle angles
             colors                     list of colors to cycle through
@@ -88,7 +89,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
     fading_properties.update(fading_kwargs)
 
     coordinates = np.asarray(coordinates)
-    radii = np.asarray(radii)
+    radii = atleast(radii, dim=1, length=coordinates.shape[1])
     if angles is not None: 
         angles = np.asarray(angles)
 
