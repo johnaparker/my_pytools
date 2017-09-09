@@ -42,7 +42,7 @@ def save_animation(anim, filename, *args, **kwargs):
 
 #TODO use matplotlib collections, patchcollection instead of python lists for performance
 def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C0'], ax=None,
-        xlim=None, ylim=None, time=None, number_labels=False, trail=0, trail_type='normal',
+        xlim=None, ylim=None, time=None, time_unit='T', number_labels=False, trail=0, trail_type='normal',
         time_kwargs={}, label_kwargs={}, circle_kwargs={}, trail_kwargs={}, fading_kwargs={}):
     """create a 2D animation of trajectories
 
@@ -54,7 +54,8 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
             ax (default None)          specify the axes of the animation
             xlim[2]                    min,max values of x-axis
             ylim[2]                    min,max values of y-axis
-            time[N]                    display the time (in microseconds)
+            time[N]                    display the time (in time_units)
+            time_unit                  string label for the units of time (default 'T')
             number_labels              include text labels (1,2,...) per particle
             trail                      length of particle trail
             trail_type                 'normal' or 'fading'
@@ -146,7 +147,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
     ax.set_ylim(ylim)
     ax.set_aspect('equal')
     if time is not None:
-        text['clock'] = ax.text(.98,0.02, r"{0:.2f} $\mu$s".format(0.0), transform=ax.transAxes, horizontalalignment='right', animated=True, **time_properties)
+        text['clock'] = ax.text(.98,0.02, r"{0:.2f} {1}".format(0.0, time_unit), transform=ax.transAxes, horizontalalignment='right', animated=True, **time_properties)
 
     def update(t):
         for i in range(Nparticles): 
@@ -158,7 +159,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
                 lines[i].set_transform(rotation_transform(coordinate, angles[t,i], ax=ax))
 
             if time is not None:
-                text['clock'].set_text(r"{0:.2f} $\mu$s".format(t))
+                text['clock'].set_text(r"{0:.2f} {1}".format(time[t], time_unit))
 
             if trail > 0:
                 tmin = max(0,t-trail)
