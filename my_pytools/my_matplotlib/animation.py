@@ -43,7 +43,7 @@ def save_animation(anim, filename, *args, **kwargs):
 #TODO use matplotlib collections, patchcollection instead of python lists for performance
 def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C0'], ax=None,
         xlim=None, ylim=None, time=None, time_unit='T', number_labels=False, trail=0, trail_type='normal',
-        time_kwargs={}, label_kwargs={}, circle_kwargs={}, trail_kwargs={}, fading_kwargs={}):
+        time_kwargs={}, label_kwargs={}, circle_kwargs={}, trail_kwargs={}, fading_kwargs={}, **kwargs):
     """create a 2D animation of trajectories
 
             coordinates[T,N,3]         particle x,y,z coordinates 
@@ -64,6 +64,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
             circle_kwargs              additional arguments to circle properites
             trail_kwargs               additional arguments to line trail properies
             fading_kwargs              Fading line properites, {max_lw, min_lw}
+            kwargs                     Additional kwargs for FuncAnimation
     """
     trail_types = ['normal', 'fading']
     if trail_type not in trail_types:
@@ -172,7 +173,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
         
         return  trails + circles + lines + list(text.values())
 
-    anim = animation.FuncAnimation(ax.figure, update, frames=np.arange(0,Nt,1), interval=30, blit=True, repeat=True)
+    anim = animation.FuncAnimation(ax.figure, update, frames=np.arange(0,Nt,1), blit=True, repeat=True, **kwargs)
     return anim
 
 
