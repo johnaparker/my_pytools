@@ -27,19 +27,21 @@ def circle_arrow(center, radius, width, fraction, angle=0, reverse=False, ax=Non
 
     # arrow head
     alpha = angle if reverse else angle + theta
+    rotate = np.pi if reverse else 0
+
     px = center[0] + radius*np.cos(alpha)
     py = center[1] + radius*np.sin(alpha)
     head = patches.RegularPolygon(
             (px, py),            # center 
             3,                   # triangle shape
-            width, # radius
-            angle + theta,       # orientation
+            width/3**0.5,        # radius
+            alpha + rotate,      # orientation
             **kwargs,
            )
 
     arc.get_linewidth()
-    plt.gca().add_patch(arc)
-    plt.gca().add_patch(head)
+    ax.add_patch(arc)
+    ax.add_patch(head)
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
