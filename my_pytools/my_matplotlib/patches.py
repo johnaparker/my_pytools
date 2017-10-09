@@ -3,6 +3,7 @@
 from matplotlib import patches
 from matplotlib.collections import PatchCollection
 import numpy as np
+import matplotlib.pyplot as plt
 
 def circle_arrow(center, radius, width, fraction, angle=0, reverse=False, ax=None, **kwargs):
     """A circular shaped arrow. Returns a PatchCollection
@@ -13,7 +14,7 @@ def circle_arrow(center, radius, width, fraction, angle=0, reverse=False, ax=Non
            width       width of arrow head in data units
            fraction    fraction of arc to draw (0 to 1)
            angle       starting angle (default: 0)
-           reverese    if True, place arrow head at start (default: False)
+           reverse    if True, place arrow head at start (default: False)
            ax          axis to draw on (default: current axis)
            **kwargs    additional kwargs passed to Arc & Polygon
     """
@@ -44,7 +45,6 @@ def circle_arrow(center, radius, width, fraction, angle=0, reverse=False, ax=Non
     ax.add_patch(head)
 
 if __name__ == "__main__":
-    import matplotlib.pyplot as plt
     plt.figure()
 
     arrow = circle_arrow((0,0), 0.5, width=.1, fraction=0.8, angle=.4*np.pi, reverse=False, lw=20, color='C0')
