@@ -50,7 +50,7 @@ class sim_and_vis:
 
     def execute(self, sim, vis):
         """given sim() and vis() functions, run the request"""
-        if self.args.action in ['sim', 'both']:
+        if self.args.action in ['sim', 'both'] or not os.path.exists(self.filepath):
             self.request()
             print("Running simulation...")
             symbols = sim()
