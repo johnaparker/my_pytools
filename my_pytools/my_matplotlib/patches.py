@@ -78,7 +78,10 @@ def bracket(p1, p2, height, text=None, drop_bracket=0, drop_text=0, ax=None, kw_
         kwargs = {'color': 'black', 'verticalalignment': 'top', 'horizontalalignment': 'center'}
         if kw_bracket is not None:
             kwargs.update(kw_text)
-        ax.text(vertices[2][0]/2, vertices[1][1] - drop_text, text, **kwargs)
+
+        xpos = (vertices[1][0] + vertices[2][0])/2 
+        ypos = vertices[1][1] - drop_text
+        ax.text(xpos, ypos, text, **kwargs)
 
 if __name__ == "__main__":
     plt.figure()
