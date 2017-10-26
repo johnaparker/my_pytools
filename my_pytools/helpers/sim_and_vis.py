@@ -30,7 +30,6 @@ class sim_and_vis:
 
         parser = argparse.ArgumentParser()
         parser.add_argument('action', nargs='?', type=str, choices=['sim', 'vis', 'both'], default='vis', help='Run the sim, vis the results, or do both')
-        argcomplete.autocomplete(parser)
         self.args = parser.parse_args()
 
     def request(self):
@@ -60,3 +59,29 @@ class sim_and_vis:
             print("Visualizing data...")
             vis()
 
+if __name__ == "__main__":
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    # Setup
+    print("Script is running")
+    filepath = 'data.h5'
+    job = sim_and_vis(filepath)
+
+    # Fast, shared code goes here
+    x = np.linspace(0,1,100)
+
+    def sim():
+        # Slow, sim-only code goes here and relevant data is written to file
+        y = x**2
+        return {'y': y}
+
+    def vis():
+        # Process/Visualize data here after loading symbols from file
+        symbols = job.read()
+
+        plt.plot(x, symbols.y)
+        plt.show()
+
+    # execute
+    job.execute(sim,vis)
