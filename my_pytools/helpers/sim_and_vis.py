@@ -30,11 +30,12 @@ class sim_and_vis:
 
         parser = argparse.ArgumentParser()
         parser.add_argument('action', nargs='?', type=str, choices=['sim', 'vis', 'both'], default='vis', help='Run the sim, vis the results, or do both')
+        parser.add_argument('-f', '--force', action='store_true', help='force over-write any existing files')
         self.args = parser.parse_args()
 
     def request(self):
         """request if existing hdf5 file should be overwriten"""
-        if os.path.exists(self.filepath):
+        if not self.args.force and os.path.exists(self.filepath):
             delete = input(f"Do you really want to write over existing data in '{self.filepath}'? (y/n) ")
             if delete != 'y':
                 sys.exit('Aborting...')
