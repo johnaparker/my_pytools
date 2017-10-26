@@ -1,6 +1,6 @@
 # My patch objects
 
-from matplotlib import patches
+from matplotlib import patches,path
 from matplotlib.collections import PatchCollection
 import numpy as np
 import matplotlib.pyplot as plt
@@ -43,6 +43,42 @@ def circle_arrow(center, radius, width, fraction, angle=0, reverse=False, ax=Non
     arc.get_linewidth()
     ax.add_patch(arc)
     ax.add_patch(head)
+
+def bracket(p1, p2, height, text=None, drop_bracket=0, drop_text=0, ax=None, kw_bracket=None, kw_text=None):
+    """Square bracket, including optional text
+    
+       Arguments:
+           p1             top left corner
+           p2             top right corner
+           height         height of bracket
+           text           text below the bracket (default: None)
+           drop_bracket   distance to move the bracket down (default: 0)
+           drop_text      distance to move the text down (default: 0)
+           ax             axes (default: current axes)
+           kw_bracket     optional kwargs for bracket object (patches.PathPatch)
+           kw_text        optional kwargs for text object
+    """
+    if ax is None:
+        ax = plt.gca()
+
+    p1,p2 = map(np.asarray, [p1,p2])
+    vertices = np.zeros([4,2])
+    vertices[0] = p1
+    vertices[1] = p1 - np.array([0,height])
+    vertices[2] = p2 - np.array([0,height])
+    vertices[3] = p2
+    vertices[:,1] -= drop_bracket
+
+    kwargs = {'color': 'black'}
+    if kw_bracket is not None:
+        kwargs.update(kw_bracket)
+    bracket = patches.PathPatch(path.Path(vertices), fill=False, **kwargs)
+    ax.add_patch(bracket)
+    if text is not None:
+        kwargs = {'color': 'black', 'verticalalignment': 'top', 'horizontalalignment': 'center'}
+        if kw_bracket is not None:
+            kwargs.update(kw_text)
+        ax.text(vertices[2][0]/2, vertices[1][1] - drop_text, text, **kwargs)
 
 if __name__ == "__main__":
     plt.figure()
