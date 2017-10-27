@@ -10,20 +10,37 @@ class Bunch:
 
 def load_symbols(filepath):
     """Load all symbols from h5 filepath"""
-    symbols = {}
+    sims = {}
     with h5py.File(filepath, 'r') as f:
-        for dset in f:
-            symbols[dset] = f[dset][...]
-    return Bunch(symbols)
+        for group_name in f:
+            group = f[group_name]
 
-def write_symbols(filepath, symbols):
-    """Write all symbols to h5 file, where symbols is a {name: value} dictionary"""
-    with h5py.File(filepath, 'w') as f:
+            symbols = {}
+            for dset_name in group:
+                symbols[dset_name] = group[dset_name][...]
+
+            sims[group_name] = Bunch(symbols)
+
+    return Bunch(sims)
+
+def write_symbols(filepath, symbols, group=None):
+    """Write all symbols to h5 file, where symbols is a {name: value} dictionary
+       
+       Arguments:
+           filepath      path to file
+           symbols       {name: vale} dictionary
+           group         group to write symbols to (default: root)
+    """
+    if group is None:
+        group = ''
+
+    with h5py.File(filepath, 'a') as f:
         for name,symbol in symbols.items():
-            f[name] = symbol
+            f[f'{group}/{name}'] = symbol
 
 class sim_and_vis:
     """Control over simulation and visualization functions"""
+
     def __init__(self, filepath):
         """filepath to hdf5 file"""
         self.filepath = filepath
@@ -31,58 +48,87 @@ class sim_and_vis:
         parser = argparse.ArgumentParser()
         parser.add_argument('action', nargs='?', type=str, choices=['sim', 'vis', 'both'], default='vis', help='Run the sim, vis the results, or do both')
         parser.add_argument('-f', '--force', action='store_true', help='force over-write any existing files')
+        parser.add_argument('-s', '--sims', nargs='*', type=str, default=None, help='run specific sims by name')
         self.args = parser.parse_args()
 
-    def request(self):
+    def request(self, group=None):
         """request if existing hdf5 file should be overwriten"""
-        if not self.args.force and os.path.exists(self.filepath):
-            delete = input(f"Do you really want to write over existing data in '{self.filepath}'? (y/n) ")
-            if delete != 'y':
-                sys.exit('Aborting...')
+        if group is None:
+            group = ''
+        
+        with h5py.File(self.filepath, 'a') as f:
+            if not self.args.force and os.path.exists(self.filepath) and group in f:
+                delete = input(f"Do you really want to write over existing data in '{self.filepath}/{group}'? (y/n) ")
+                if delete != 'y':
+                    sys.exit('Aborting...')
+            if group in f:
+                del f[group]
 
-    def write(self, symbols):
+    def write(self, symbols, group=None):
         """write symbols"""
-        write_symbols(self.filepath, symbols)
+        write_symbols(self.filepath, symbols, group)
 
     def read(self):
         """read symbols"""
         return load_symbols(self.filepath)
 
-    def execute(self, sim, vis):
-        """given sim() and vis() functions, run the request"""
+    def execute(self, sims, vis, store=None):
+        """given {name: sim()} dictionary and vis() function, run the request
+           
+           Arguments:
+               sims        {name: sim()} dictionary of simulation names to simulation functions
+               vis         vis() visualization function
+               store       {name: data} dictionary to write as additional data (optional)
+        """
+
+        if store is not None:
+            with h5py.File(self.filepath, 'a') as f:
+                if 'store' in f:
+                    del f['store']
+                for name,value in store.items():
+                    f[f'store/{name}'] = value
+
         if self.args.action in ['sim', 'both'] or not os.path.exists(self.filepath):
-            self.request()
-            print("Running simulation...")
-            symbols = sim()
-            self.write(symbols)
+            for name,sim in sims.items():
+                if self.args.sims is not None and name not in self.args.sims:
+                    continue
+
+                self.request(name)
+                print(f"Running simulation '{name}'")
+                symbols = sim()
+                if not isinstance(symbols,dict):
+                    raise ValueError(f"simulation '{name}' needs to return a dictionary of symbols")
+                self.write(symbols, name)
 
         if self.args.action in ['vis', 'both']:
             print("Visualizing data...")
             vis()
 
+
+
 if __name__ == "__main__":
     import numpy as np
     import matplotlib.pyplot as plt
 
-    # Setup
-    print("Script is running")
-    filepath = 'data.h5'
+    ### Setup
+    filepath = 'temp.h5'
     job = sim_and_vis(filepath)
 
-    # Fast, shared code goes here
-    x = np.linspace(0,1,100)
+    ### Fast, shared code goes here
+    x = np.linspace(0,1,10)
 
-    def sim():
-        # Slow, sim-only code goes here and relevant data is written to file
+    ### Slow, sim-only code goes here and relevant data is written to file
+    def sim1():
         y = x**2
-        return {'y': y}
+        return {'y': y**2}
 
+    def sim2():
+        z = x**2
+        return {'z': z**2}
+
+    ### Process/Visualize data here after loading symbols from file
     def vis():
-        # Process/Visualize data here after loading symbols from file
-        symbols = job.read()
+        sim = job.read()
 
-        plt.plot(x, symbols.y)
-        plt.show()
-
-    # execute
-    job.execute(sim,vis)
+    ### execute
+    job.execute({'sim1': sim1, 'sim2': sim2}, vis, store={'x': x})
