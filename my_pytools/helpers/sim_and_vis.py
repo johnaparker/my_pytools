@@ -73,11 +73,11 @@ class sim_and_vis:
         return load_symbols(self.filepath)
 
     def execute(self, sims, vis, store=None):
-        """given {name: sim()} dictionary and vis() function, run the request
+        """given {name: sim()} dictionary and {name: vis()} dictionary, run the request
            
            Arguments:
                sims        {name: sim()} dictionary of simulation names to simulation functions
-               vis         vis() visualization function
+               vis         {name: vis()} dictionary of visualization names to visualization functions
                store       {name: data} dictionary to write as additional data (optional)
         """
 
@@ -88,21 +88,23 @@ class sim_and_vis:
                 for name,value in store.items():
                     f[f'store/{name}'] = value
 
-        if self.args.action in ['sim', 'both'] or not os.path.exists(self.filepath):
+        with h5py.File(self.filepath, 'a') as f:
             for name,sim in sims.items():
-                if self.args.sims is not None and name not in self.args.sims:
-                    continue
+                if self.args.action in ['sim', 'both'] or name not in f:
+                    if self.args.sims is not None and name not in self.args.sims:
+                        continue
 
-                self.request(name)
-                print(f"Running simulation '{name}'")
-                symbols = sim()
-                if not isinstance(symbols,dict):
-                    raise ValueError(f"simulation '{name}' needs to return a dictionary of symbols")
-                self.write(symbols, name)
+                    self.request(name)
+                    print(f"Running simulation '{name}'")
+                    symbols = sim()
+                    if not isinstance(symbols,dict):
+                        raise ValueError(f"simulation '{name}' needs to return a dictionary of symbols")
+                    self.write(symbols, name)
 
         if self.args.action in ['vis', 'both']:
             print("Visualizing data...")
-            vis()
+            for name,func in vis.items():
+                func()
 
 
 
@@ -124,11 +126,14 @@ if __name__ == "__main__":
 
     def sim2():
         z = x**2
-        return {'z': z**2}
+        return {'z': z**3}
 
     ### Process/Visualize data here after loading symbols from file
     def vis():
         sim = job.read()
+        plt.plot(x,sim.sim1.y)
+        plt.plot(x,sim.sim2.z)
+        plt.show()
 
     ### execute
-    job.execute({'sim1': sim1, 'sim2': sim2}, vis, store={'x': x})
+    job.execute({'sim1': sim1, 'sim2': sim2}, {'vis': vis}, store={'x': x})
