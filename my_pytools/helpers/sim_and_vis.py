@@ -89,12 +89,17 @@ class sim_and_vis:
                     f[f'store/{name}'] = value
 
         with h5py.File(self.filepath, 'a') as f:
+
+            for name,sim in sims.items():
+                if self.args.action in ['sim', 'both'] or name not in f:
+                    if not (self.args.sims is not None and name not in self.args.sims):
+                        self.request(name)
+
             for name,sim in sims.items():
                 if self.args.action in ['sim', 'both'] or name not in f:
                     if self.args.sims is not None and name not in self.args.sims:
                         continue
 
-                    self.request(name)
                     print(f"Running simulation '{name}'")
                     symbols = sim()
                     if not isinstance(symbols,dict):
