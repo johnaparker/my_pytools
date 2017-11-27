@@ -5,6 +5,7 @@ special defines any additional special functions on top of scipy.special
 import numpy as np
 import sympy
 from scipy import special
+import enum
 
 
 def spherical_hn(n, z, derivative=False):
@@ -63,16 +64,43 @@ def tau_func(n, m):
 
     return f
 
-def VSH_magnetic_scat(n, m):
-    """magnetic vector spherical harmonic function
+class VSH_mode(enum.Enum):
+    outgoing = enum.auto()
+    incident = enum.auto()
 
-            n: int         order
-            m: int         degree
+def VSH(n, m, mode=VSH_mode.outgoing):
+    """electric and magnetic vector spherical harmonic function
 
-       returns M(r,θ,ϕ,k) -> [3,...] array, the 3 x,y,z components   """
- 
+            n: int           order
+            m: int           degree
+            mode: VSH_mode   type of VSH (outgoing, incident)
+
+
+       returns (N(r,θ,ϕ,k) -> [3,...], M(r,θ,ϕ,k) -> [3,...]), the 3 x,y,z components"""
+
     pi_f = pi_func(n,m)
     tau_f = tau_func(n,m)
+    Pnm = associated_legendre(n,m)
+
+    if mode is VSH_mode.outgoing:
+        zn = spherical_hn
+    elif mode is VSH_mode.incident:
+        zn = special.spherical_jn
+    else:
+        raise TypeError('mode must be of enum type VSH_mode')
+        
+    def N(r, theta, phi, k):
+        H = zn(n, k*r)
+        Hp = zn(n, k*r, derivative=True)
+        Pnm_val = Pnm(np.cos(theta))
+
+        factor = (H + r*k*Hp)*np.exp(1j*m*phi)/(k*r)
+
+        r_comp = n*(n+1)*Pnm_val*H/(k*r)*np.exp(1j*m*phi)
+        theta_comp = tau_f(theta)*factor
+        phi_comp = 1j*pi_f(theta)*factor
+
+        return np.array([r_comp, theta_comp, phi_comp])
 
     def M(r, theta, phi, k):
         H = spherical_hn(n, k*r)
@@ -84,34 +112,7 @@ def VSH_magnetic_scat(n, m):
 
         return np.array([r_comp, theta_comp, phi_comp])
 
-    return M
-
-def VSH_electric_scat(n, m):
-    """electric vector spherical harmonic function
-
-            n: int         order
-            m: int         degree
-
-       returns N(r,θ,ϕ,k) -> [3,...] array, the 3 x,y,z components   """
-
-    pi_f = pi_func(n,m)
-    tau_f = tau_func(n,m)
-    Pnm = associated_legendre(n,m)
-
-    def N(r, theta, phi, k):
-        H = spherical_hn(n, k*r)
-        Hp = spherical_hn(n, k*r, derivative=True)
-        Pnm_val = Pnm(np.cos(theta))
-
-        factor = (H + r*k*Hp)*np.exp(1j*m*phi)/(k*r)
-
-        r_comp = n*(n+1)*Pnm_val*H/(k*r)*np.exp(1j*m*phi)
-        theta_comp = tau_f(theta)*factor
-        phi_comp = 1j*pi_f(theta)*factor
-
-        return np.array([r_comp, theta_comp, phi_comp])
-
-    return N
+    return N,M
 
 
 ##### riccati needs to be verified with miepy #####
@@ -231,11 +232,10 @@ if __name__ == "__main__":
 
     plt.legend()
 
-    f1 = VSH_magnetic_scat(2,1)
-    f2 = VSH_electric_scat(2,1)
+    f1,f2 = VSH(2,1, VSH_mode.incident)
 
     r = np.array([10])
-    theta = np.linspace(0, np.pi, 30)
+    theta = np.linspace(1e-6, np.pi-1e-6, 30)
     phi = np.linspace(0, 2*np.pi, 30)
     k = np.linspace(1,10,10)
 
