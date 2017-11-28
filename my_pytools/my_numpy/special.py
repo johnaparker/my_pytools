@@ -70,9 +70,7 @@ def tau_func(n, m):
 def a_func(m, n, u, v, p):
     """a function that appears in the VSH translation coefficients"""
 
-    # if np.abs(m) > n or np.abs(u) > v or np.abs(m+u) > p:
-    if np.abs(m) > n or np.abs(m+u) > p:
-        print('here')
+    if np.abs(m) > n or np.abs(u) > v or np.abs(m+u) > p:
         return 0
 
     factor = (2*p+1)/2*factorial(p-m-u)/factorial(p+m+u)
@@ -100,7 +98,7 @@ def Emn(m, n, E0):
     return E0*1j**n*(2*n+1)*factorial(n-m)/factorial(n+m)
 
 def A_translation(m, n, u, v, r, theta, phi, k):
-    factor = (-1)**u *1j**(v-n)*(2*v+1)/(2*v*(v+1))
+    factor = (-1.)**u *1.j**(v-n)*(2*v+1)/(2*v*(v+1))
     normalization = Emn(u,v,1)/Emn(m,n,1)
 
     sum_term = 0
@@ -114,7 +112,7 @@ def A_translation(m, n, u, v, r, theta, phi, k):
     return normalization*factor*sum_term
 
 def B_translation(m, n, u, v, r, theta, phi, k):
-    factor = (-1)**u *1j**(v-n)*(2*v+1)/(2*v*(v+1))
+    factor = (-1.)**u *1.j**(v-n)*(2*v+1)/(2*v*(v+1))
     normalization = Emn(u,v,1)/Emn(m,n,1)
 
     sum_term = 0
