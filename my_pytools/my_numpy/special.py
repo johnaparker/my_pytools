@@ -4,9 +4,11 @@ special defines any additional special functions on top of scipy.special
 
 import numpy as np
 import sympy
-from scipy import special
+import scipy
+from scipy import special, integrate, misc
 import enum
-
+from functools import lru_cache
+from math import factorial
 
 def spherical_hn(n, z, derivative=False):
     """spherical hankel function of the first kind or its derivative
@@ -63,6 +65,67 @@ def tau_func(n, m):
             return -1*np.sin(theta)*Pnm_d(np.cos(theta))
 
     return f
+
+@lru_cache(maxsize=None)
+def a_func(m, n, u, v, p):
+    """a function that appears in the VSH translation coefficients"""
+
+    # if np.abs(m) > n or np.abs(u) > v or np.abs(m+u) > p:
+    if np.abs(m) > n or np.abs(m+u) > p:
+        print('here')
+        return 0
+
+    factor = (2*p+1)/2*factorial(p-m-u)/factorial(p+m+u)
+
+    Pnm = associated_legendre(n,m)
+    Pvu = associated_legendre(v,u)
+    Ppmu = associated_legendre(p,m+u)
+    integrand = lambda x: Pnm(x)*Pvu(x)*Ppmu(x)
+    integral = integrate.quad(integrand, -1, 1)[0]
+
+    return factor*integral
+
+@lru_cache(maxsize=None)
+def b_func(m, n, u, v, p):
+    """b function that appears in the VSH translation coefficients"""
+
+    b1 = (2*p+1)/(2*p-1)
+    b2 = (v-u)*(v+u+1)*a_func(m,n,-u-1,v,p-1)
+    b3 = -(p-m+u)*(p-m+u-1)*a_func(m,n,-u+1,v,p-1)
+    b4 = 2*u*(p-m+u)*a_func(m,n,-u,v,p-1)
+
+    return b1*(b2+b3+b4)
+
+def Emn(m, n, E0):
+    return E0*1j**n*(2*n+1)*factorial(n-m)/factorial(n+m)
+
+def A_translation(m, n, u, v, r, theta, phi, k):
+    factor = (-1)**u *1j**(v-n)*(2*v+1)/(2*v*(v+1))
+    normalization = Emn(u,v,1)/Emn(m,n,1)
+
+    sum_term = 0
+    for p in range(np.abs(n-v), n+v+1):
+        if np.abs(m-u) > p:
+            continue
+        else:
+            Pnm = associated_legendre(p,m-u)
+            sum_term += (-1j)**p *(n*(n+1) + v*(v+1) - p*(p+1))*a_func(m,n,-u,v,p)*spherical_hn(p, k*r)*Pnm(np.cos(theta))*np.exp(1j*(m-u)*phi)
+    
+    return normalization*factor*sum_term
+
+def B_translation(m, n, u, v, r, theta, phi, k):
+    factor = (-1)**u *1j**(v-n)*(2*v+1)/(2*v*(v+1))
+    normalization = Emn(u,v,1)/Emn(m,n,1)
+
+    sum_term = 0
+    for p in range(np.abs(n-v), n+v+1):
+        if np.abs(m-u) > p:
+            continue
+        else:
+            Pnm = associated_legendre(p,m-u)
+            sum_term += (-1j)**p *b_func(m,n,u,v,p)*spherical_hn(p, k*r)*Pnm(np.cos(theta))*np.exp(1j*(m-u)*phi)
+    
+    return normalization*factor*sum_term
 
 class VSH_mode(enum.Enum):
     outgoing = enum.auto()
