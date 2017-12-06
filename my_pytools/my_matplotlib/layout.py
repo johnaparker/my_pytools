@@ -6,7 +6,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 
 class alpha_labels:
-    def __init__(self, loc = 2, outside=True, str_format='{0}', displacement=(0,0), color='black', capital=False, bold = True, eps = 0.01, bbox=None):
+    def __init__(self, loc = 2, outside=True, str_format='{0}', displacement=(0,0), color='black', capital=False, bold = True, eps = 0.01, bbox=None, **kwargs):
         """Create a new alphanumeric label class
 
                 loc          corner anchor of the text (1,2,3,4)
@@ -35,8 +35,8 @@ class alpha_labels:
         self.rhat = sgn*np.array([np.cos(phi), np.sin(phi)])
 
         self.text_dict = {'color': color, 'fontweight': 'normal', 'verticalalignment':verticalalignment, 'horizontalalignment':horizontalalignment, 'bbox':bbox}
-
         if bold == True: self.text_dict['fontweight'] = 'bold'
+        self.text_dict.update(kwargs)
 
     def insert(self, ax = None, **kwargs):
         """Insert an alphanumeric label on axis ax (defaults to current). 
@@ -53,8 +53,6 @@ class alpha_labels:
 
         width = ax.bbox.width
         height = ax.bbox.height
-        print(width)
-        print(height)
 
         # add text label
         dict_args = self.text_dict.copy()
