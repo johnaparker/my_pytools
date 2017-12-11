@@ -8,20 +8,26 @@ class Bunch:
     def __init__(self, adict):
         self.__dict__.update(adict)
 
-def load_symbols(filepath):
-    """Load all symbols from h5 filepath"""
-    sims = {}
+def load_symbols(filepath, group_name=None):
+    """Load all symbols from h5 filepath, group (all groups if None)"""
+
+    collection = {}
     with h5py.File(filepath, 'r') as f:
-        for group_name in f:
+        if group_name is None:
+            for group_name in f:
+                group = f[group_name]
+
+                symbols = {}
+                for dset_name in group:
+                    symbols[dset_name] = group[dset_name][...]
+
+                collection[group_name] = Bunch(symbols)
+        else:
             group = f[group_name]
-
-            symbols = {}
             for dset_name in group:
-                symbols[dset_name] = group[dset_name][...]
+                collection[dset_name] = group[dset_name][...]
 
-            sims[group_name] = Bunch(symbols)
-
-    return Bunch(sims)
+    return Bunch(collection)
 
 def write_symbols(filepath, symbols, group=None):
     """Write all symbols to h5 file, where symbols is a {name: value} dictionary
@@ -38,24 +44,123 @@ def write_symbols(filepath, symbols, group=None):
         for name,symbol in symbols.items():
             f[f'{group}/{name}'] = symbol
 
-class sim_and_vis:
-    """Control over simulation and visualization functions"""
+class deferred_function:
+    """wrapper around a function -- to defer its execution and store metadata"""
+    def __init__(self, function, description=None, args=()):
+        self.function = function
+        self.description = description
+        self.args = args
+
+    def __call__(self):
+        return self.function(*self.args)
+
+class pinboard:
+    """Deferred function evaluation and access to cached function output"""
 
     def __init__(self, filepath):
-        """filepath to hdf5 file"""
+        """filepath to hdf5 file to cache data"""
 
         self.filepath = filepath
-        self.simulation_functions = []
-        self.visualization_functions = []
+        self.cached_functions = {}
+        self.at_end_functions = {}
 
-    def run_parser(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument('action', nargs='?', type=str, choices=['sim', 'vis', 'both'], default='vis', help='Run the sim, vis the results, or do both')
-        parser.add_argument('-f', '--force', action='store_true', help='force over-write any existing files')
-        parser.add_argument('-s', '--sims', nargs='*', type=str, default=None, help='run specific sims by name')
-        self.args = parser.parse_args()
+    def load(self, function=None):
+        """
+        Load cached symbols for {}particular function
+        If function is None, read symbols for all registered functions
+        """
+        if function is None:
+            group = None
+        else:
+            group = function.__name__
 
-    def request(self, group=None):
+        return load_symbols(self.filepath, group)
+
+    def execute(self, store=None):
+        """Run the requested simulations and visualizations
+           
+           Arguments:
+               store       {name: data} dictionary to write as additional data (optional)
+        """
+
+        self._run_parser()
+
+        if self.args.action == 'display':
+            self.display_functions()
+            return
+
+        if store is not None:
+            with h5py.File(self.filepath, 'a') as f:
+                if 'store' in f:
+                    del f['store']
+                for name,value in store.items():
+                    f[f'store/{name}'] = value
+
+        functions_to_execute = {}
+        with h5py.File(self.filepath, 'a') as f:
+            if self.args.rerun is None:
+                for name,func in self.cached_functions.items():
+                    if name not in f:
+                        functions_to_execute[name] = func
+
+            elif len(self.args.rerun) == 0:
+                functions_to_execute.update(self.cached_functions)
+
+            else:
+                for name in self.args.rerun:
+                    if name not in self.cached_functions.keys():
+                        raise ValueError(f"Invalid argument: simulation name '{name}' does not correspond to any cached function")
+                    functions_to_execute[name] = self.cached_functions[name]
+
+            for name,func in functions_to_execute.items():
+                if name in f:
+                    self._request_to_overwrite(name)
+
+            for name,func in functions_to_execute.items():
+                print(f"Running cached function '{name}'")
+                symbols = func()
+                if not isinstance(symbols,dict):
+                    raise ValueError(f"simulation '{name}' needs to return a dictionary of symbols")
+                self._write_symbols(symbols, name)
+
+        if self.at_end_functions:
+            print("Running at-end functions")
+            for func in self.at_end_functions.values():
+                func()
+
+    def cache(self, description=None):
+        """decorator to add a cached function to be conditionally ran"""
+        def wrap(func):
+            self.cached_functions[func.__name__] = deferred_function(func, description)
+            return func
+        return wrap
+
+    def at_end(self, description=None):
+        """decorator to add a function to be executed at the end"""
+        def wrap(func):
+            self.at_end_functions[func.__name__] = deferred_function(func, description)
+            return func
+        return wrap
+
+    def shared(self, class_type):
+        """decorator to add a class for shared variables"""
+        return class_type
+
+    def display_functions(self):
+        print("cached functions:")
+        for name,func in self.cached_functions.items():
+            print('\t', name, ' -- ', func.description, sep='')
+
+        print('\n', "at-end functions:", sep='')
+        for name,func in self.at_end_functions.items():
+            print('\t', name, ' -- ', func.description, sep='')
+
+    def _write_symbols(self, symbols, group=None):
+        """write symbols to cache inside group"""
+        write_symbols(self.filepath, symbols, group)
+
+
+    def _request_to_overwrite(self, group=None):
         """request if existing hdf5 file should be overwriten"""
         if group is None:
             group = ''
@@ -68,72 +173,16 @@ class sim_and_vis:
             if group in f:
                 del f[group]
 
-    def write(self, symbols, group=None):
-        """write symbols"""
-        write_symbols(self.filepath, symbols, group)
+    def _run_parser(self):
+        """parse user request"""
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-r', '--rerun', nargs='*', type=str, default=None, help='re-run specific sims by name')
+        parser.add_argument('-f', '--force', action='store_true', help='force over-write any existing files')
 
-    def read(self):
-        """read symbols"""
-        return load_symbols(self.filepath)
+        subparsers = parser.add_subparsers(dest="action")
+        display_parser = subparsers.add_parser('display', help='display available functions')
 
-    def execute(self, store=None):
-        """Run the requested simulations and visualizations
-           
-           Arguments:
-               store       {name: data} dictionary to write as additional data (optional)
-        """
-
-        self.run_parser()
-
-        if store is not None:
-            with h5py.File(self.filepath, 'a') as f:
-                if 'store' in f:
-                    del f['store']
-                for name,value in store.items():
-                    f[f'store/{name}'] = value
-
-        with h5py.File(self.filepath, 'a') as f:
-
-            for sim in self.simulation_functions:
-                name = sim.__name__
-                if self.args.action in ['sim', 'both'] or name not in f:
-                    if not (self.args.sims is not None and name not in self.args.sims):
-                        self.request(name)
-
-            for sim in self.simulation_functions:
-                name = sim.__name__
-                if self.args.action in ['sim', 'both'] or name not in f:
-                    if self.args.sims is not None and name not in self.args.sims:
-                        continue
-
-                    print(f"Running simulation '{name}'")
-                    symbols = sim()
-                    if not isinstance(symbols,dict):
-                        raise ValueError(f"simulation '{name}' needs to return a dictionary of symbols")
-                    self.write(symbols, name)
-
-        if self.args.action in ['vis', 'both']:
-            print("Visualizing data...")
-            for func in self.visualization_functions:
-                func()
-
-    def simulation(self, description=None):
-        def wrap(func):
-            self.simulation_functions.append(func)
-            print(f'{func.__name__}: {description}')
-            return func
-        return wrap
-
-    def visualization(self, description=None):
-        def wrap(func):
-            self.visualization_functions.append(func)
-            print(f'{func.__name__}: {description}')
-            return func
-        return wrap
-
-    def shared(self, class_type):
-        return class_type
-
+        self.args = parser.parse_args()
 
 if __name__ == "__main__":
     import numpy as np
@@ -141,7 +190,7 @@ if __name__ == "__main__":
 
     ### Setup
     filepath = 'temp.h5'
-    job = sim_and_vis(filepath)
+    job = pinboard(filepath)
 
     ### Fast, shared code goes here
     x = np.linspace(0,1,10)
@@ -155,7 +204,7 @@ if __name__ == "__main__":
             pass
 
     ### Slow, sim-only code goes here and relevant data is written to file
-    @job.simulation("compute the square of x")
+    @job.cache("compute the square of x")
     def sim1():
         # shared = job.get_shared()
         # shared.x
@@ -163,14 +212,14 @@ if __name__ == "__main__":
         y = x**2
         return {'y': y}
 
-    @job.simulation("compute the cube of x")
+    @job.cache("compute the cube of x")
     def sim2():
         z = x**3
         return {'z': z}
 
-    @job.visualization("visualize the data")
+    @job.at_end("visualize the data")
     def vis():
-        sim = job.read()
+        sim = job.load()
         plt.plot(x,sim.sim1.y)
         plt.plot(x,sim.sim2.z)
         plt.show()
