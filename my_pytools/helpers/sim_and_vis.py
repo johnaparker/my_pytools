@@ -54,7 +54,7 @@ class deferred_function:
     def __call__(self):
         return self.function(*self.args)
 
-class pinboard:
+class sim_and_vis:
     """Deferred function evaluation and access to cached function output"""
 
     def __init__(self, filepath):
