@@ -169,12 +169,15 @@ def set_axis_formatter(format_str = '%.1f', axis='both'):
     if axis == 'both' or axis == 'y':
         plt.gca().yaxis.set_major_formatter( FormatStrFormatter(format_str) )
 
-def set_num_ticks(min_ticks, max_ticks, axis='both', prune=None):
+def set_num_ticks(min_ticks, max_ticks, axis='both', prune=None, ax=None):
     """ Set bounds on the number of ticks """
+    if ax is None:
+        ax = plt.gca()
+
     if axis == 'both' or axis == 'x':
-        plt.gca().xaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
+        ax.xaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
     if axis == 'both' or axis == 'y':
-        plt.gca().yaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
+        ax.yaxis.set_major_locator(MaxNLocator(min_n_ticks=min_ticks, nbins=max_ticks, prune=prune))
 
 def axis_equal_aspect(ax=None):
     """set axes aspect ratio to be equal"""

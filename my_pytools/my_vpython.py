@@ -74,25 +74,25 @@ def trajectory_animation_3d(coordinates, orientations, shape, properties, colors
                 arrow.pos = vec(*coordinates[0,i])
                 arrow.axis = vec(*rot[:,j])*arrow.scale
 
+    for t in range(1,coordinates.shape[0]):
+        if t == 2:
+            scene.waitfor('click')
+        for i,obj in enumerate(objs):
+            rot = quaternion.as_rotation_matrix(orientations[t,i])
 
-    while True:
-        for t in range(1,coordinates.shape[0]):
-            for i,obj in enumerate(objs):
-                rot = quaternion.as_rotation_matrix(orientations[t,i])
+            a = obj.axis
+            b = vec(*rot[:,2])
+            a /= vpython.mag(a)
+            b /= vpython.mag(b)
+            axis = vpython.cross(a,b)
+            angle = vpython.acos(vpython.dot(a,b))
+            obj.rotate(angle=angle, axis=axis, origin=obj.pos + obj.axis/2)
+            obj.pos = vec(*coordinates[t,i]) - obj.axis/2
+            if axes:
+                for j,arrow in enumerate(arrows[i]):
+                    arrow.pos = vec(*coordinates[t,i])
+                    arrow.axis = vec(*rot[:,j])*arrow.scale
 
-                a = obj.axis
-                b = vec(*rot[:,2])
-                a /= vpython.mag(a)
-                b /= vpython.mag(b)
-                axis = vpython.cross(a,b)
-                angle = vpython.acos(vpython.dot(a,b))
-                obj.rotate(angle=angle, axis=axis, origin=obj.pos + obj.axis/2)
-                obj.pos = vec(*coordinates[t,i]) - obj.axis/2
-                if axes:
-                    for j,arrow in enumerate(arrows[i]):
-                        arrow.pos = vec(*coordinates[t,i])
-                        arrow.axis = vec(*rot[:,j])*arrow.scale
-
-            vpython.rate(30)
-        for trail in trails:
-            trail.clear()
+        vpython.rate(30)
+    for trail in trails:
+        trail.clear()
