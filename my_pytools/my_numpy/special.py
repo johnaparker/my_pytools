@@ -127,6 +127,7 @@ def B_translation(m, n, u, v, r, theta, phi, k):
 
 class VSH_mode(enum.Enum):
     outgoing = enum.auto()
+    ingoing  = enum.auto()
     incident = enum.auto()
 
 def VSH(n, m, mode=VSH_mode.outgoing):
@@ -164,12 +165,12 @@ def VSH(n, m, mode=VSH_mode.outgoing):
         return np.array([r_comp, theta_comp, phi_comp])
 
     def M(r, theta, phi, k):
-        H = spherical_hn(n, k*r)
+        H = zn(n, k*r)
         factor = H*np.exp(1j*m*phi)
 
         theta_comp = 1j*pi_f(theta)*factor
         phi_comp = -1*tau_f(theta)*factor
-        r_comp = 0*theta_comp      # no r-component, same shape
+        r_comp = np.zeros_like(theta_comp)
 
         return np.array([r_comp, theta_comp, phi_comp])
 
