@@ -84,7 +84,7 @@ def fitted_colorbar(im, size="3%", pad=0.15, label=None):
 
     return cb
 
-def colorbar(cmap, vmin, vmax, label=None):
+def colorbar(cmap, vmin, vmax, label=None, **kwargs):
     """Adds a colorbar to the plot (useful when using colormaps outside of colormeshes)
             cmap         colormap
             vmin         minimum value
@@ -95,7 +95,7 @@ def colorbar(cmap, vmin, vmax, label=None):
     sm._A = []
     cb = plt.colorbar(sm)   
     if label:
-        cb.set_label(label)
+        cb.set_label(label, **kwargs)
     return cb
 
 def top_colorbar(size="3%", pad=0.15, shrink=1.0, aspect=20, label=None, **colorbar_kw):
