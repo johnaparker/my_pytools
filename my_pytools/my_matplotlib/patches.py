@@ -76,7 +76,7 @@ def bracket(p1, p2, height, text=None, drop_bracket=0, drop_text=0, ax=None, kw_
     ax.add_patch(bracket)
     if text is not None:
         kwargs = {'color': 'black', 'verticalalignment': 'top', 'horizontalalignment': 'center'}
-        if kw_bracket is not None:
+        if kw_text is not None:
             kwargs.update(kw_text)
 
         xpos = (vertices[1][0] + vertices[2][0])/2 
