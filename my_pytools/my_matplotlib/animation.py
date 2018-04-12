@@ -22,14 +22,21 @@ from tqdm import tqdm
 
 #TODO instead of full numpy arrays for raw data, use generators to compute on the fly
 
-def save_animation(anim, filename, *args, **kwargs):
+def save_animation(animation, filename, *args, **kwargs):
     """A wrapper for anim.save(...) that shows the progress of the saving
 
-            anim        animation object
+            animation   animation object, or list of animation objects
             filename    file output name
             *args       additional arguments to pass to anim.save
             **kwargs    additional keyword arguments to pass to anim.save
     """
+    if isinstance(animation, list):
+        anim = animation[0]
+        extra_anim = animation[1:]
+        kwargs.update({'extra_anim': extra_anim})
+    else:
+        anim = animation
+
     progress = tqdm(total = anim.save_count+1, ascii=True, desc="Saving video '{}'".format(filename))
     store_func = anim._func
     def wrapper(*args):
