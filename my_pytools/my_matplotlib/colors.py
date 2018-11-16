@@ -219,6 +219,9 @@ class colored_line:
     def set_animated(self, animated):
         self.collection.set_animated(animated)
 
+    def get_zorder(self):
+        return self.collection.get_zorder()
+
 def colored_plot(x, y, c, ax=None, **kwargs):
     """Like matplotlib plot, but use a list of colors c for variable color. Return a colored_line
             x[N]                   xdata
