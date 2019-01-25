@@ -61,7 +61,10 @@ class alpha_labels:
         y = (self.ypos + displace[1])
         # x = x**(300/width)
         # y = y**(300/height)
-        ax.text(x,y,label, transform=ax.transAxes, **dict_args)
+        if hasattr(ax, 'text2D'):
+            ax.text2D(x,y,label, transform=ax.transAxes, **dict_args)
+        else:
+            ax.text(x,y,label, transform=ax.transAxes, **dict_args)
 
 
 
