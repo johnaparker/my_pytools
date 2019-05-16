@@ -68,14 +68,16 @@ def modify_legend(**kwargs):
     plt.legend(**defaults)
 
 
-
-def fitted_colorbar(im, size="3%", pad=0.15, label=None):
+def fitted_colorbar(im, size="3%", pad=0.15, label=None, ax=None):
     """ Add a colorbar that matches the height of the figure
             im         the image (returned by pcolormesh/imshow)
             size       the width, as a percentatge ("x%")
             pad        spacing between figure and colorbar
             label      colorbar label        """
-    divider = make_axes_locatable(plt.gca())
+    if ax is None:
+        ax = plt.gca()
+
+    divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size=size, pad=pad)
     if label:
         cb = plt.colorbar(im,cax=cax, label=label)
