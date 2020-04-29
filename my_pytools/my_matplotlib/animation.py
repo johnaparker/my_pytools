@@ -88,11 +88,11 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
     trail_properties = dict(zorder=0)
     trail_properties.update(trail_kwargs)
 
-    circle_properties = dict(facecolor=(1,1,1,0), linewidth=2, zorder=1)
+    circle_properties = dict(fill=False, linewidth=2, zorder=1)
     circle_properties.update(circle_kwargs)
 
     line_properties = deepcopy(circle_properties)
-    line_properties.pop('facecolor')
+    line_properties.pop('fill')
 
     fading_properties = dict(max_lw=2, min_lw=0.3)
     fading_properties.update(fading_kwargs)
@@ -126,7 +126,7 @@ def trajectory_animation(coordinates, radii, projection, angles=None, colors=['C
         coordinate = coordinates[0,i]
         color = next(color_cycle)
 
-        circles.append(plt.Circle(coordinate, radii[i], edgecolor=color, animated=True, **circle_properties))
+        circles.append(plt.Circle(coordinate, radii[i], edgecolor='k', facecolor=color, animated=True, **circle_properties))
         ax.add_artist(circles[-1])
 
         if angles is not None:

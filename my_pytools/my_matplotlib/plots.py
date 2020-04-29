@@ -5,7 +5,39 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import ticker
 from matplotlib.ticker import MaxNLocator,MultipleLocator, FormatStrFormatter, FuncFormatter, ScalarFormatter
 import matplotlib as mpl
+from matplotlib import cm
 
+def gradient_fill_between(x, y1, y2=0, values=None, cmap=None, where=None, ax=None):
+    """
+    Same as matplotlib fill_between but uses a colormap with values to color in the region
+    """
+    N  = len(x)
+    dx = x[1] - x[0]
+
+    if ax is None:
+        ax = plt.gca()
+    if np.isscalar(y1):
+        y1 = np.full_like(x, y1)
+    if np.isscalar(y2):
+        y2 = np.full_like(x, y2)
+    if where is None:
+        where = np.full_like(x, True, dtype=bool)
+    if values is None:
+        values = np.linspace(0, 1, N)
+
+    if cmap is None:
+        cmap = mpl.cm.viridis
+    elif isinstance(cmap, str):
+        cmap = cm.get_cmap(cmap)
+
+    verts = []
+    for i in range(N-1):
+        if where[i]:
+            verts.append([(x[i],y1[i]), (x[i+1],y1[i+1]), (x[i+1],y2[i+1]), (x[i],y2[i]) ])
+
+    colors = cmap(values)
+    collection = mpl.collections.PolyCollection(verts, edgecolors=colors, facecolors=colors)
+    ax.add_collection(collection)
 
 def pcolor_z_info(data,xdata,ydata, ax=None):
     """ Allow pcolor data to be seen interactively in the plot
